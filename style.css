@@ -10,12 +10,35 @@ body::before {
 }
 
 :root {
-    --bg-light: #f0f2f5;
+    /* Светлая тема (основная) */
+    --bg-base: #f0f2f5;
     --panel-glass: rgba(255, 255, 255, 0.20);
     --glass-dark: rgba(113, 113, 119, 0.45);
     --glass-edge: rgba(255, 255, 255, 0.8);
     --dark-edge: rgba(255, 255, 255, 0.8); 
     --text-main: #1a1a1b;
+    
+    /* Цвета сфер для светлой темы */
+    --sphere-1: #989898;
+    --sphere-2: #9d9da1;
+    --sphere-3: #939395;
+    --sphere-4: #838486c4;
+}
+
+/* Темная тема */
+body.dark-theme {
+    --bg-base: #1d1e1f;
+    --panel-glass: rgba(35, 36, 37, 0.28);
+    --glass-dark: rgba(44, 45, 49, 0.5);
+    --glass-edge: rgba(255, 255, 255, 0.181);
+    --dark-edge: rgba(255, 255, 255, 0.24); 
+    --text-main: #e4e6eb;
+    
+    /* Темные, глубокие цвета сфер для темной темы */
+    --sphere-1: #333338;
+    --sphere-2: #3e3f42;
+    --sphere-3: #323438;
+    --sphere-4: #343436c4;
 }
 
 * {
@@ -26,13 +49,14 @@ body::before {
 }
 
 body {
-    background-color: var(--bg-light);
+    background-color: var(--bg-base);
     color: var(--text-main);
     overflow-x: hidden;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    transition: background-color 0.8s ease, color 0.8s ease;
 }
 
 /* --- СТАТИЧНЫЙ ФОН С РАЗМЫТЫМИ СФЕРАМИ --- */
@@ -40,8 +64,9 @@ body {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: -1;
-    background: #f0f2f5; 
+    background: var(--bg-base); 
     overflow: hidden;
+    transition: background-color 0.8s ease;
 }
 
 .sphere {
@@ -49,12 +74,13 @@ body {
     border-radius: 50%;
     filter: blur(100px);
     opacity: 0.4;
+    transition: background-color 0.8s ease;
 }
 
-.s1 { width: 50vw; height: 50vw; background: #989898; top: -10%; left: -10%; }
-.s2 { width: 40vw; height: 40vw; background: #9d9da1; bottom: -5%; right: -5%; }
-.s3 { width: 35vw; height: 35vw; background: #939395; top: 20%; left: 30%; }
-.s4 { width: 45vw; height: 45vw; background: #838486c4; bottom: 10%; left: -5%; }
+.s1 { width: 50vw; height: 50vw; background: var(--sphere-1); top: -10%; left: -10%; }
+.s2 { width: 40vw; height: 40vw; background: var(--sphere-2); bottom: -5%; right: -5%; }
+.s3 { width: 35vw; height: 35vw; background: var(--sphere-3); top: 20%; left: 30%; }
+.s4 { width: 45vw; height: 45vw; background: var(--sphere-4); bottom: 10%; left: -5%; }
 /* ---------------------------- */
 
 .main-glass-panel {
@@ -67,6 +93,7 @@ body {
     border-radius: 40px;
     padding: 60px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.05), inset 0 0 20px rgba(255,255,255,0.3);
+    transition: background-color 0.8s ease, border-color 0.8s ease;
 }
 
 /* --- ОБНОВЛЕННЫЕ СТИЛИ ЗАГОЛОВКОВ --- */
@@ -81,31 +108,13 @@ body {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Стили для ника (Жирный) */
-.title-bold {
-    font-weight: 700; 
-    user-select: none;
-    -webkit-user-select: none; /* Для Safari */
-    cursor: default;
-}
-
 /* Стили для слова PORTFOLIO (Тонкий) */
-.title-light {
-    font-weight: 300;
-    opacity: 0.8; 
-    user-select: none;
-    -webkit-user-select: none; /* Для Safari */
-    cursor: default;
-}
-/* Стили для слов в главном заголовке */
-.title-bold { font-weight: 700; }
-.title-light { font-weight: 300; opacity: 0.8;
-    margin-bottom: 30px;
-}
+.title-bold { font-weight: 700; user-select: none; -webkit-user-select: none; cursor: default; }
+.title-light { font-weight: 300; opacity: 0.8; user-select: none; -webkit-user-select: none; cursor: default; margin-bottom: 30px; }
+
 .main-title:hover {
     letter-spacing: 4px; /* Увеличиваем расстояние между буквами */
 }
-
 
 .my-work-title {
     font-family: Arial, Helvetica, sans-serif;
@@ -119,7 +128,7 @@ body {
     cursor: default;
     position: relative;
     display: inline-block; /* Чтобы линия была по длине текста, а не на всю ширину */
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, color 0.8s ease;
 }
 .my-work-title::after {
     content: '';
@@ -129,7 +138,7 @@ body {
     width: 0;
     height: 1px; /* Очень тонкая линия */
     background: var(--text-main);
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, background-color 0.8s ease;
     opacity: 0.5;
 }
 
@@ -144,7 +153,7 @@ body {
     border: 1px solid var(--dark-edge);
     box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 10px rgba(255,255,255,0.05);
     color: #ffffff; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.8s ease;
 }
 
 .dark-glass:hover {
@@ -233,9 +242,7 @@ body {
     align-items: center;
     cursor: default; 
     user-select: none;
-    user-select: none;
     -webkit-user-select: none; /* Для Safari */
-    cursor: default; 
 }
 
 .service-icon {
@@ -270,6 +277,7 @@ body {
     background: var(--glass-dark);
     z-index: 1;
     border-radius: 2px;
+    transition: background-color 0.8s ease;
 }
 
 .process-step {
@@ -299,6 +307,7 @@ body {
     justify-content: center;
     margin-bottom: 15px;
     box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    transition: background-color 0.8s ease;
 }
 
 .process-step h3 { font-size: 1.1rem; margin-bottom: 8px; color: #fff; }
@@ -320,7 +329,7 @@ body {
     aspect-ratio: 9/16;
     border: 3px solid var(--glass-dark);
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.8s ease;
     will-change: transform, opacity, box-shadow;
     transform: translateZ(0); 
     backface-visibility: hidden;
@@ -375,7 +384,7 @@ video {
     white-space: nowrap;
     color: #f7f8fa;
     border: 1px solid var(--dark-edge); 
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, border-color 0.8s ease;
     z-index: 5;
     pointer-events: none;
 }
@@ -662,4 +671,50 @@ footer {
 .fade-up.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* --- КНОПКА СМЕНЫ ТЕМЫ --- */
+.theme-toggle-btn {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--glass-dark);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--dark-edge);
+    color: var(--text-main);
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, background-color 0.8s ease, border-color 0.8s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.theme-toggle-btn svg {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Настройки иконок в светлой теме */
+.theme-toggle-btn .sun-icon { opacity: 0; transform: rotate(-90deg); }
+.theme-toggle-btn .moon-icon { opacity: 1; transform: rotate(0); }
+
+/* Настройки иконок в темной теме */
+body.dark-theme .theme-toggle-btn .sun-icon { opacity: 1; transform: rotate(0); }
+body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90deg); }
+
+@media (max-width: 900px) {
+    .theme-toggle-btn { top: 20px; right: 20px; }
 }
