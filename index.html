@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Video Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="icons/D-icon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="sphere s1"></div>
+        <div class="sphere s2"></div>
+        <div class="sphere s3"></div>
+        <div class="sphere s4"></div>
+    </div>
+
+    <div class="main-glass-panel">
+        
+        <header class="hero">
+            <div class="hero-left">
+                <h1 class="main-title">
+                  <span class="title-bold">DIXQE</span> 
+                  <span class="title-light">PORTFOLIO</span>
+                </h1>
+                
+                <div class="dark-glass bio-box">
+                    <p><strong>IT Student & Video Editor.</strong> I combine technical precision with creative storytelling to deliver high-quality edits at an accessible price. Focused on <strong>DaVinci Resolve</strong> and clean aesthetics. Feel free to DM me with any questions.</p>
+                </div>
+
+                <div class="badges-box">
+                    <span class="dark-glass badge"> AI Voiceover (ElevenLabs) </span>
+                    <span class="dark-glass badge"> Clean Sound & Grading </span>
+                    <span class="dark-glass badge"> Modern Visual Styles </span>
+                    
+                </div>
+            </div>
+            
+            <div class="hero-right">
+                <div class="dark-glass avatar-frame">
+                    <img src="avatar.jpg" alt="Avatar" class="avatar">
+                </div>
+            </div>
+        </header>
+
+        <div class="section-divider">
+            <h2 class="my-work-title fade-up">What do I do?</h2>
+        </div>
+
+        <div class="services-row">
+            <div class="dark-glass service-card">
+                <img src="icons/film.svg" alt="Narrative Editing" class="service-icon">
+                <h3>Narrative Editing</h3>
+                <p>Crafting a clear story from raw footage, focusing on pacing and structure.</p>
+            </div>
+            
+            <div class="dark-glass service-card">
+                <img src="icons/view.svg" alt="Visual Storytelling" class="service-icon">
+                <h3>Visual Storytelling</h3>
+                <p>Enhancing your message through creative transitions and visual flow.</p>
+            </div>
+
+            <div class="dark-glass service-card">
+                <img src="icons/audio-lines.svg" alt="AI Audio" class="service-icon">
+                <h3>AI Audio & Voice</h3>
+                <p>Crystal clear sound using AI noise reduction and professional voiceovers.</p>
+            </div>
+
+            <div class="dark-glass service-card">
+                <img src="icons/settings.svg" alt="Advanced AI Tools" class="service-icon">
+                <h3>Advanced AI Tools</h3>
+                <p>Smart masking, upscaling, and dynamic subtitles for maximum retention.</p>
+            </div>
+
+            <div class="dark-glass service-card">
+                <img src="icons/palette.svg" alt="Color Correction" class="service-icon">
+                <h3>Color Correction</h3>
+                <p>Polishing the image to ensure a consistent and professional look.</p>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h2 class="my-work-title fade-up">My Work</h2>
+        </div>
+
+        <main class="video-grid">
+            <div class="video-card" style="--accent: #cfb89a;">
+                <div class="controls">
+                    <button class="ctrl-btn mute-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path class="mute-line" d="M23 9l-6 6M17 9l6 6"></path></svg>
+                    </button>
+                    <button class="ctrl-btn fs-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+                <video src="https://res.cloudinary.com/dy1czpd9t/video/upload/f_auto,q_90/v1771956225/Be_quick_but_dont_be_in_a_hurry_rh62uf.mp4" preload="metadata" poster="img/be_quick_but_dont_be_in_a_hurry_Cover.jpg" loop muted playsinline></video>
+                <div class="dark-glass video-label">Interview</div>
+                
+                <div class="bottom-controls">
+                    <div class="progress-container"><div class="progress-fill"></div></div>
+                    <div class="volume-container">
+                        <button class="play-pause-btn">
+                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+                            <svg class="icon-play" style="display:none;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card" style="--accent: #1a1a1a;">
+                <div class="controls">
+                    <button class="ctrl-btn mute-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path class="mute-line" d="M23 9l-6 6M17 9l6 6"></path></svg>
+                    </button>
+                    <button class="ctrl-btn fs-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+                <video src="https://res.cloudinary.com/dy1czpd9t/video/upload/f_auto,q_90/v1771956202/Nikola_Tesla_ewm5fd.mp4" preload="metadata" poster="img/Nikola_Tesla_Cover.jpg" loop muted playsinline></video>
+                <div class="dark-glass video-label">Documentary</div>
+                
+                <div class="bottom-controls">
+                    <div class="progress-container"><div class="progress-fill"></div></div>
+                    <div class="volume-container">
+                        <button class="play-pause-btn">
+                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+                            <svg class="icon-play" style="display:none;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card" style="--accent: #2ff324;">
+                <div class="controls">
+                    <button class="ctrl-btn mute-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path class="mute-line" d="M23 9l-6 6M17 9l6 6"></path></svg>
+                    </button>
+                    <button class="ctrl-btn fs-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+                <video src="https://res.cloudinary.com/dy1czpd9t/video/upload/f_auto,q_90/v1771956232/Viper_Lineups_Split_B_wwzaba.mp4" preload="metadata" poster="img/Viper_Split_B_Cover.jpg" loop muted playsinline></video>
+                <div class="dark-glass video-label">Gaming</div>
+                
+                <div class="bottom-controls">
+                    <div class="progress-container"><div class="progress-fill"></div></div>
+                    <div class="volume-container">
+                        <button class="play-pause-btn">
+                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+                            <svg class="icon-play" style="display:none;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card" style="--accent: #adb5bd;">
+                <div class="controls">
+                    <button class="ctrl-btn mute-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path class="mute-line" d="M23 9l-6 6M17 9l6 6"></path></svg>
+                    </button>
+                    <button class="ctrl-btn fs-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+                <video src="https://res.cloudinary.com/dy1czpd9t/video/upload/f_auto,q_90/v1771956231/movies_with_the_best_visuals_a0ud9d.mp4" preload="metadata" poster="img/MWTBV_Cover.jpg" loop muted playsinline></video>
+                <div class="dark-glass video-label">Cinematic Mashup</div>
+                
+                <div class="bottom-controls">
+                    <div class="progress-container"><div class="progress-fill"></div></div>
+                    <div class="volume-container">
+                        <button class="play-pause-btn">
+                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+                            <svg class="icon-play" style="display:none;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card" style="--accent: #3c9089;">
+                <div class="controls">
+                    <button class="ctrl-btn mute-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path class="mute-line" d="M23 9l-6 6M17 9l6 6"></path></svg>
+                    </button>
+                    <button class="ctrl-btn fs-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+                <video src="https://res.cloudinary.com/dy1czpd9t/video/upload/f_auto,q_90/v1771957130/MARATHON_pcimsq.mp4" preload="metadata" poster="img/MARATHON_Cover.jpg" loop muted playsinline></video>
+                <div class="dark-glass video-label">Dynamic Edit</div>
+                
+                <div class="bottom-controls">
+                    <div class="progress-container"><div class="progress-fill"></div></div>
+                    <div class="volume-container">
+                        <button class="play-pause-btn">
+                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+                            <svg class="icon-play" style="display:none;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card" style="--accent: #e9ecef;">
+                <div class="controls">
+                    <button class="ctrl-btn mute-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path class="mute-line" d="M23 9l-6 6M17 9l6 6"></path></svg>
+                    </button>
+                    <button class="ctrl-btn fs-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+                <video src="https://res.cloudinary.com/dy1czpd9t/video/upload/f_auto,q_90/v1771956228/the_power_of_colorgrading_ttsgxe.mp4" preload="metadata" poster="img/Power_of_colograding_Cover.jpg" loop muted playsinline></video>
+                <div class="dark-glass video-label">Color Grading</div>
+                
+                <div class="bottom-controls">
+                    <div class="progress-container"><div class="progress-fill"></div></div>
+                    <div class="volume-container">
+                        <button class="play-pause-btn">
+                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+                            <svg class="icon-play" style="display:none;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="section-divider">
+            <h2 class="my-work-title fade-up">Work Process</h2>
+        </div>
+
+        <div class="process-wrapper">
+            <div class="process-line"></div>
+            
+            <div class="process-step dark-glass">
+                <div class="step-num">1</div>
+                <h3>Briefing</h3>
+                <p>Discussing goals, style, and music</p>
+            </div>
+            
+            <div class="process-step dark-glass">
+                <div class="step-num">2</div>
+                <h3>Rough Cut</h3>
+                <p>Synchronizing raw footage with rhythm</p>
+            </div>
+            
+            <div class="process-step dark-glass">
+                <div class="step-num">3</div>
+                <h3>VFX & SFX</h3>
+                <p>Adding dynamic effects and sound</p>
+            </div>
+            
+            <div class="process-step dark-glass">
+                <div class="step-num">4</div>
+                <h3>Finishing</h3>
+                <p>Visual Refinement and final delivery</p>
+            </div>
+        </div>
+        
+        <footer>
+            <h2 class="my-work-title fade-up" style="margin-bottom: 40px;">Let's work together</h2>
+            <div class="contacts-list">
+                
+                <div class="dark-glass contact-item">
+                    <img src="icons/gmail-icon.svg" class="contact-svg" alt="">
+                    <span class="contact-text">Email: <strong>dixqediting@gmail.com</strong></span>
+                    <button class="copy-btn" data-copy="dixqediting@gmail.com">
+                        <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                    </button>
+                </div>
+
+                <div class="dark-glass contact-item">
+                    <img src="icons/discord-icon.svg" class="contact-svg" alt="">
+                    <span class="contact-text">Discord: <strong>dixqe</strong></span>
+                    <button class="copy-btn" data-copy="dixqe">
+                        <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                    </button>
+                </div>
+
+                <div class="dark-glass contact-item">
+                    <img src="icons/telegram-icon.svg" class="contact-svg" alt="">
+                    <span class="contact-text">Telegram: <strong>@Dixqe</strong></span>
+                    <button class="copy-btn" data-copy="@Dixqe">
+                        <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                    </button>
+                </div>
+                
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
