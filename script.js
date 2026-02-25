@@ -146,10 +146,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
                 if (volSlider) volSlider.value = globalMuted ? 0 : video.volume;
                 
-                let playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(() => {});
-                }
+                video.currentTime = 0; // Гарантируем, что старт всегда с начала
+let playPromise = video.play();
+if (playPromise !== undefined) {
+    playPromise.catch((error) => {
+        console.log("Play interrupted or not ready", error);
+    });
+}
             }
         });
 
