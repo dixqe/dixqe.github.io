@@ -655,6 +655,10 @@ footer {
     .contacts-list { flex-direction: column; align-items: center; }
     .contact-item { min-width: 100%; max-width: 100%; padding: 15px 20px; }
     .contact-text { font-size: 0.95rem; }
+    /* Добавляем микро-зум только для телефонов */
+    video {
+        transform: scale(1.03); /* Увеличиваем на 3%, чтобы скрыть черные полоски */
+    }
 }
 
 .play-pause-btn {
@@ -736,4 +740,3 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
 @media (max-width: 900px) {
     .theme-toggle-btn { top: 20px; right: 20px; }
 }
-
