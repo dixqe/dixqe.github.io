@@ -47,6 +47,19 @@ document.addEventListener("DOMContentLoaded", function() {
         const muteBtn = card.querySelector(".mute-btn");
         const muteLine = muteBtn.querySelector(".mute-line");
         const fsBtn = card.querySelector(".fs-btn");
+        // --- ФИКС КНОПКИ ЗВУКА ДЛЯ МОБИЛОК И ПК ---
+        if (muteBtn) {
+            muteBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Не даем клику перейти на саму карточку
+                
+                globalMuted = !globalMuted;
+                video.muted = globalMuted;
+                
+                if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
+                if (volSlider) volSlider.value = globalMuted ? 0 : 1;
+            });
+        }
         
         const progressContainer = card.querySelector(".progress-container");
         const progressFill = card.querySelector(".progress-fill");
