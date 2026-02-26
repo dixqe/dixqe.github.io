@@ -628,15 +628,33 @@ footer {
     .process-step { min-width: 45%; }
 }
 @media (max-width: 600px) {
-    .services-row { grid-template-columns: 1fr; }
-    .process-step { min-width: 100%; }
+    /* Жестко скрываем кнопку темы на телефонах, чтобы не лагало */
+    .theme-toggle-btn { display: none !important; }
     
-    .video-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .video-label { font-size: 0.8rem; padding: 6px 15px; }
-    .ctrl-btn { width: 40px; height: 40px; }
-    .ctrl-btn svg { width: 18px; height: 18px; }
-    .bottom-controls { padding: 10px; }
-    .main-glass-panel { padding: 20px; margin: 15px; }
+    .main-glass-panel { padding: 25px 15px; margin: 15px; }
+    
+    /* Центрируем бейджи под био */
+    .badges-box { justify-content: center; margin-top: 10px; }
+    
+    .services-row { grid-template-columns: 1fr; gap: 15px; }
+    .process-step { min-width: 100%; padding: 20px 15px; }
+    
+    /* Видео: делаем в 1 колонку по центру, чтобы смотрелось как в TikTok/Reels */
+    .video-grid { grid-template-columns: 1fr; gap: 30px; }
+    .video-card { 
+        max-width: 320px; /* Ограничиваем ширину, чтобы не было слишком огромным */
+        margin: 0 auto; 
+    }
+    
+    .video-label { font-size: 0.85rem; padding: 8px 18px; bottom: 15px; }
+    .ctrl-btn { width: 44px; height: 44px; } /* Делаем кнопки чуть больше для пальцев */
+    .ctrl-btn svg { width: 20px; height: 20px; }
+    .bottom-controls { padding: 15px; }
+    
+    /* Фикс плашек контактов (чтобы не вылезали за края) */
+    .contacts-list { flex-direction: column; align-items: center; }
+    .contact-item { min-width: 100%; max-width: 100%; padding: 15px 20px; }
+    .contact-text { font-size: 0.95rem; }
 }
 
 .play-pause-btn {
