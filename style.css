@@ -740,3 +740,28 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
 @media (max-width: 900px) {
     .theme-toggle-btn { top: 20px; right: 20px; }
 }
+/* --- ОТКЛЮЧЕНИЕ HOVER-АНИМАЦИЙ ДЛЯ МОБИЛОК --- */
+@media (max-width: 900px) {
+    /* Отключаем разъезжание букв в главном заголовке */
+    .main-title:hover {
+        letter-spacing: normal;
+    }
+
+    /* Отключаем подпрыгивание стеклянных карточек (бейджи, контакты) */
+    .dark-glass:hover {
+        transform: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 10px rgba(255,255,255,0.05);
+    }
+
+    /* Отключаем увеличение рамки с аватаркой */
+    .avatar-frame:hover {
+        transform: none;
+    }
+    
+    /* Если хочешь отключить выезжающую линию у заголовка My Work, раскомментируй код ниже */
+    /*
+    .my-work-title:hover::after {
+        width: 0; 
+    }
+    */
+}
