@@ -257,12 +257,19 @@ if (playPromise !== undefined) {
             if (volSlider) volSlider.value = globalMuted ? 0 : 1;
         });
 
-        if (fsBtn) {
+       if (fsBtn) {
             fsBtn.addEventListener("click", function(e) {
                 e.preventDefault();
-                e.stopPropagation(); 
+                e.stopPropagation(); // Не даем клику уйти на карточку
                 
-                if (card.requestFullscreen) {
+                // 1. СПЕЦИАЛЬНО ДЛЯ IPHONE (iOS Safari)
+                // На iOS разворачивать можно ТОЛЬКО сам тег video
+                if (video && video.webkitEnterFullscreen) {
+                    video.webkitEnterFullscreen();
+                } 
+                // 2. Стандартный способ (ПК и Android)
+                // Разворачиваем всю карточку с контроллами
+                else if (card.requestFullscreen) {
                     card.requestFullscreen();
                 } else if (card.webkitRequestFullscreen) {
                     card.webkitRequestFullscreen();
