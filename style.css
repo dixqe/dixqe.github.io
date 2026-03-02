@@ -10,7 +10,7 @@ body::before {
 }
 
 :root {
-    /* Светлая тема (основная) */
+    /* СВЕТЛАЯ ТЕМА (ПО УМОЛЧАНИЮ) */
     --bg-base: #f0f2f5;
     --panel-glass: rgba(255, 255, 255, 0.20);
     --glass-dark: rgba(113, 113, 119, 0.45);
@@ -25,7 +25,7 @@ body::before {
     --sphere-4: #838486c4;
 }
 
-/* Темная тема */
+/* ТЕМНАЯ ТЕМА (КЛАСС-МОДИФИКАТОР) */
 body.dark-theme {
     --bg-base: #1d1e1f;
     --panel-glass: rgba(35, 36, 37, 0.28);
@@ -34,7 +34,7 @@ body.dark-theme {
     --dark-edge: rgba(255, 255, 255, 0.24); 
     --text-main: #e4e6eb;
     
-    /* Темные, глубокие цвета сфер для темной темы */
+    /* Темные, глубокие цвета сфер */
     --sphere-1: #333338;
     --sphere-2: #3e3f42;
     --sphere-3: #323438;
@@ -56,7 +56,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    transition: background-color 0.8s ease, color 0.8s ease;
+    /* УБРАН TRANSITION 0.8s ДЛЯ МГНОВЕННОЙ СМЕНЫ */
 }
 
 /* --- СТАТИЧНЫЙ ФОН С РАЗМЫТЫМИ СФЕРАМИ --- */
@@ -66,7 +66,7 @@ body {
     z-index: -1;
     background: var(--bg-base); 
     overflow: hidden;
-    transition: background-color 0.8s ease;
+    /* УБРАН TRANSITION */
 }
 
 .sphere {
@@ -74,7 +74,7 @@ body {
     border-radius: 50%;
     filter: blur(100px);
     opacity: 0.4;
-    transition: background-color 0.8s ease;
+    /* УБРАН TRANSITION */
 }
 
 .s1 { width: 50vw; height: 50vw; background: var(--sphere-1); top: -10%; left: -10%; }
@@ -93,27 +93,25 @@ body {
     border-radius: 40px;
     padding: 60px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.05), inset 0 0 20px rgba(255,255,255,0.3);
-    transition: background-color 0.8s ease, border-color 0.8s ease;
+    /* УБРАН TRANSITION */
 }
 
 /* --- ОБНОВЛЕННЫЕ СТИЛИ ЗАГОЛОВКОВ --- */
-/* Общие настройки заголовка */
 .main-title {
     display: flex;
-    gap: 15px;          /* Расстояние между ником и словом Portfolio */
+    gap: 15px;          
     font-size: 3.5rem;
     align-items: baseline;
-    -webkit-font-smoothing: antialiased; /* Делает тонкие шрифты еще изящнее */
+    -webkit-font-smoothing: antialiased; 
     -moz-osx-font-smoothing: grayscale;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Стили для слова PORTFOLIO (Тонкий) */
 .title-bold { font-weight: 700; user-select: none; -webkit-user-select: none; cursor: default; }
 .title-light { font-weight: 300; opacity: 0.8; user-select: none; -webkit-user-select: none; cursor: default; margin-bottom: 30px; }
 
 .main-title:hover {
-    letter-spacing: 4px; /* Увеличиваем расстояние между буквами */
+    letter-spacing: 4px; 
 }
 
 .my-work-title {
@@ -124,11 +122,12 @@ body {
     letter-spacing: 1px;
     margin-bottom: 30px;
     user-select: none;
-    -webkit-user-select: none; /* Для Safari */
+    -webkit-user-select: none; 
     cursor: default;
     position: relative;
-    display: inline-block; /* Чтобы линия была по длине текста, а не на всю ширину */
-    transition: opacity 0.3s ease, color 0.8s ease;
+    display: inline-block; 
+    /* УБРАН ЦВЕТОВОЙ TRANSITION */
+    transition: opacity 0.3s ease;
 }
 .my-work-title::after {
     content: '';
@@ -136,14 +135,14 @@ body {
     left: 0;
     bottom: -5px;
     width: 0;
-    height: 1px; /* Очень тонкая линия */
+    height: 1px; 
     background: var(--text-main);
-    transition: width 0.3s ease, background-color 0.8s ease;
+    transition: width 0.3s ease; /* Убран цвет transition */
     opacity: 0.5;
 }
 
 .my-work-title:hover::after {
-    width: 100%; /* Линия выезжает на всю длину */
+    width: 100%; 
 }
 
 .dark-glass {
@@ -153,7 +152,8 @@ body {
     border: 1px solid var(--dark-edge);
     box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 10px rgba(255,255,255,0.05);
     color: #ffffff; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.8s ease;
+    /* Оставлены только трансформации */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .dark-glass:hover {
@@ -242,7 +242,7 @@ body {
     align-items: center;
     cursor: default; 
     user-select: none;
-    -webkit-user-select: none; /* Для Safari */
+    -webkit-user-select: none; 
 }
 
 .service-icon {
@@ -277,7 +277,7 @@ body {
     background: var(--glass-dark);
     z-index: 1;
     border-radius: 2px;
-    transition: background-color 0.8s ease;
+    /* УБРАН TRANSITION */
 }
 
 .process-step {
@@ -307,7 +307,7 @@ body {
     justify-content: center;
     margin-bottom: 15px;
     box-shadow: 0 0 15px rgba(255,255,255,0.2);
-    transition: background-color 0.8s ease;
+    /* УБРАН TRANSITION */
 }
 
 .process-step h3 { font-size: 1.1rem; margin-bottom: 8px; color: #fff; }
@@ -329,7 +329,8 @@ body {
     aspect-ratio: 9/16;
     border: 3px solid var(--glass-dark);
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.8s ease;
+    /* Убраны background-color transition */
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
     will-change: transform, opacity, box-shadow;
     transform: translateZ(0); 
     backface-visibility: hidden;
@@ -384,7 +385,8 @@ video {
     white-space: nowrap;
     color: #f7f8fa;
     border: 1px solid var(--dark-edge); 
-    transition: all 0.3s ease, border-color 0.8s ease;
+    /* Убран border-color 0.8s ease */
+    transition: all 0.3s ease;
     z-index: 5;
     pointer-events: none;
 }
@@ -713,7 +715,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease, background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
@@ -726,14 +728,16 @@ footer {
     width: 20px;
     height: 20px;
     position: absolute;
+    /* Оставлен transition для иконок, но он не влияет на тему сайта */
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Настройки иконок в светлой теме */
+/* Настройки иконок (СВЕТЛАЯ ТЕМА - ДЕФОЛТ) */
+/* По умолчанию (Светлая тема) - видим Луну (чтобы включить темную) */
 .theme-toggle-btn .sun-icon { opacity: 0; transform: rotate(-90deg); }
 .theme-toggle-btn .moon-icon { opacity: 1; transform: rotate(0); }
 
-/* Настройки иконок в темной теме */
+/* Когда активен класс dark-theme - видим Солнце (чтобы включить светлую) */
 body.dark-theme .theme-toggle-btn .sun-icon { opacity: 1; transform: rotate(0); }
 body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90deg); }
 
@@ -742,26 +746,14 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
 }
 /* --- ОТКЛЮЧЕНИЕ HOVER-АНИМАЦИЙ ДЛЯ МОБИЛОК --- */
 @media (max-width: 900px) {
-    /* Отключаем разъезжание букв в главном заголовке */
     .main-title:hover {
         letter-spacing: normal;
     }
-
-    /* Отключаем подпрыгивание стеклянных карточек (бейджи, контакты) */
     .dark-glass:hover {
         transform: none;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 10px rgba(255,255,255,0.05);
     }
-
-    /* Отключаем увеличение рамки с аватаркой */
     .avatar-frame:hover {
         transform: none;
     }
-    
-    /* Если хочешь отключить выезжающую линию у заголовка My Work, раскомментируй код ниже */
-    /*
-    .my-work-title:hover::after {
-        width: 0; 
-    }
-    */
 }
