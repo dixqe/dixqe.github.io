@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // --- ЛОГИКА ТЕМНОЙ ТЕМЫ ---
+    // --- ЛОГИКА ТЕМЫ (СВЕТЛАЯ ПО УМОЛЧАНИЮ) ---
     const themeToggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
 
-    // Проверяем, есть ли сохраненная тема в localStorage
+    // Проверяем, есть ли сохраненная ТЕМНАЯ тема в localStorage
     if (localStorage.getItem('theme') === 'dark') {
         body.classList.add('dark-theme');
     }
 
     themeToggleBtn.addEventListener('click', () => {
+        // Переключаем класс темной темы
         body.classList.toggle('dark-theme');
         
         // Сохраняем выбор пользователя
