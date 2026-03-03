@@ -334,6 +334,12 @@ body {
     will-change: transform, opacity, box-shadow;
     transform: translateZ(0); 
     backface-visibility: hidden;
+    .video-card {
+    /* ... твои текущие стили ... */
+    transform: translateZ(0); /* Лечит баги рендеринга в Safari */
+    overflow: hidden; /* Строго обрезаем всё лишнее */
+    border-radius: 16px; /* Чуть меньше радиус для мобилок выглядит аккуратнее */
+}
 }
 
 /* Поддержка эффекта наведения и мобильного тапа */
@@ -755,5 +761,75 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
     }
     .avatar-frame:hover {
         transform: none;
+    }
+}
+@media (max-width: 768px) {
+    /* 1. Всегда показываем верхние кнопки (звук, фулскрин) */
+    .video-card .controls {
+        opacity: 1 !important;
+        background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%); /* Подложка, чтобы было видно на светлом видео */
+        padding-bottom: 20px;
+    }
+
+    /* 2. Нижняя панель тоже всегда видна, но чуть компактнее */
+    .video-card .bottom-controls {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    }
+
+    /* 3. Увеличиваем размер кнопок под палец */
+    .ctrl-btn svg, .play-pause-btn svg {
+        width: 24px; /* Было 20px, делаем больше для пальца */
+        height: 24px;
+    }
+}.container {
+        width: 92%; /* Чуть шире на мобилках */
+        padding-top: 80px; /* Меньше отступ сверху */
+    }
+
+    .hero h1 {
+        font-size: 2.5rem; /* Уменьшаем с 4.5rem, чтобы влезло */
+        margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+        max-width: 100%; /* Текст на всю ширину */
+    }
+
+    /* Сетка в 1 колонку, но с меньшими дырками */
+    .portfolio-grid {
+        grid-template-columns: 1fr; /* Строго одна колонка */
+        gap: 20px; /* Уменьшаем отступ между видео */
+    }
+    
+    /* Баджи в 2 ряда аккуратно */
+    .bio-badges {
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    @media (max-width: 768px) {
+    .glass-panel, .video-label, .contact-item, .badge {
+        backdrop-filter: blur(5px); /* На компе 10-12px, тут ставим 5px */
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    /* Сферы можно вообще немного приглушить или уменьшить блюр */
+    .sphere {
+        filter: blur(40px); /* Было 80px */
+    }
+}
+@media (max-width: 768px) {
+    /* Делаем кнопку Play более явной, когда видео на паузе */
+    .video-card:not(.mobile-active) .dark-glass.video-label::after {
+        content: "Tap to watch";
+        display: block;
+        font-size: 0.7rem;
+        opacity: 0.7;
+        margin-top: 4px;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 }
