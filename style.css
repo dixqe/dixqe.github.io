@@ -406,13 +406,18 @@ video {
 
 .controls {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 0; left: 0; width: 100%;
+    padding: 20px;
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 10;
+    z-index: 5;
+    background: none !important; /* УБИРАЕМ фон */
+}
+/* Добавляем тень иконкам, чтобы они были видны без подложки */
+.ctrl-btn svg {
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.8)); 
 }
 
 .video-card:hover .controls,
@@ -810,6 +815,24 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         margin-bottom: 30px;
     }
     @media (max-width: 768px) {
+        /* Добавляем "воздуха" с боков для текста */
+    .hero {
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 40px; /* Немного уменьшим отступ снизу */
+    }
+
+    .bio-badges {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Чтобы заголовок не был слишком длинным и не прыгал */
+    .hero h1 {
+        word-wrap: break-word;
+        padding: 0 10px;
+    }
+}
     .glass-panel, .video-label, .contact-item, .badge {
         backdrop-filter: blur(5px); /* На компе 10-12px, тут ставим 5px */
         -webkit-backdrop-filter: blur(5px);
@@ -819,17 +842,3 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
     .sphere {
         filter: blur(40px); /* Было 80px */
     }
-}
-@media (max-width: 768px) {
-    /* Делаем кнопку Play более явной, когда видео на паузе */
-    .video-card:not(.mobile-active) .dark-glass.video-label::after {
-        content: "Tap to watch";
-        display: block;
-        font-size: 0.7rem;
-        opacity: 0.7;
-        margin-top: 4px;
-        font-weight: 400;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-}
