@@ -334,12 +334,10 @@ body {
     will-change: transform, opacity, box-shadow;
     transform: translateZ(0); 
     backface-visibility: hidden;
-    .video-card {
     /* ... твои текущие стили ... */
     transform: translateZ(0); /* Лечит баги рендеринга в Safari */
     overflow: hidden; /* Строго обрезаем всё лишнее */
     border-radius: 16px; /* Чуть меньше радиус для мобилок выглядит аккуратнее */
-}
 }
 
 /* Поддержка эффекта наведения и мобильного тапа */
@@ -404,20 +402,25 @@ video {
     border-color: var(--accent);
 }
 
+/* 1. Возвращаем иконки в правый угол и убираем фон */
 .controls {
     position: absolute;
-    top: 0; left: 0; width: 100%;
-    padding: 20px;
+    top: 0; 
+    right: 0; 
+    width: auto; /* Чтобы не растягивалось на весь экран */
+    padding: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Все иконки справа */
+    gap: 8px; /* Расстояние между звуком и фулскрином */
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 5;
-    background: none !important; /* УБИРАЕМ фон */
+    background: none !important; /* Убираем темный прямоугольник */
 }
-/* Добавляем тень иконкам, чтобы они были видны без подложки */
+
+/* 2. Тень для иконок, чтобы они не терялись на белом фоне видео */
 .ctrl-btn svg {
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.8)); 
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.8));
 }
 
 .video-card:hover .controls,
@@ -426,8 +429,8 @@ video {
 }
 
 .ctrl-btn {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.75); /* Сделали фон чуть плотнее */
+    /* backdrop-filter удален полностью */
     border: 1px solid rgba(255,255,255,0.2);
     color: white;
     width: 40px;
@@ -437,9 +440,13 @@ video {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
 }
-.ctrl-btn:hover { background: rgba(0, 0, 0, 0.9); }
+
+.ctrl-btn:hover { 
+    background: rgba(0, 0, 0, 0.95); /* При наведении почти черный */
+    transform: scale(1.05); /* Легкое увеличение для отзывчивости */
+}
 .ctrl-btn svg { width: 18px; height: 18px; }
 
 /* --- ПАНЕЛЬ УПРАВЛЕНИЯ ВНИЗУ --- */
@@ -815,23 +822,27 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         margin-bottom: 30px;
     }
     @media (max-width: 768px) {
-        /* Добавляем "воздуха" с боков для текста */
-    .hero {
-        padding-left: 20px;
-        padding-right: 20px;
-        margin-bottom: 40px; /* Немного уменьшим отступ снизу */
+        @media (max-width: 768px) {
+    /* 1. Скрываем нижнюю панель (прогресс-бар) по умолчанию на мобилках */
+    .video-card .bottom-controls {
+        opacity: 0 !important;
+        pointer-events: none; /* Чтобы случайно не нажать на полосу, пока она скрыта */
+        transform: translateY(10px); /* Легкое смещение вниз для красоты появления */
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    .bio-badges {
-        padding-left: 10px;
-        padding-right: 10px;
+    /* 2. Показываем прогресс-бар ТОЛЬКО когда карточка активна (после тапа) */
+    .video-card.mobile-active .bottom-controls {
+        opacity: 1 !important;
+        pointer-events: auto;
+        transform: translateY(0);
+        /* Оставляем твой градиент, чтобы цифры были читаемы на фоне видео */
+        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
     }
-
-    /* Чтобы заголовок не был слишком длинным и не прыгал */
-    .hero h1 {
-        word-wrap: break-word;
-        padding: 0 10px;
-    }
+    
+    /* Все остальные кнопки (мультимедиа сверху) останутся как есть, 
+       так как мы их здесь не переопределяем */
+}
 }
     .glass-panel, .video-label, .contact-item, .badge {
         backdrop-filter: blur(5px); /* На компе 10-12px, тут ставим 5px */
