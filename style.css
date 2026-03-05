@@ -100,7 +100,7 @@ body {
 .main-title {
     display: flex;
     gap: 15px;          
-    font-size: 3.5rem !important;
+    font-size: 3.5rem;
     align-items: baseline;
     -webkit-font-smoothing: antialiased; 
     -moz-osx-font-smoothing: grayscale;
