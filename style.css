@@ -4,7 +4,7 @@ body::before {
     top: 0; left: 0; width: 100%; height: 100%;
     /* Очень тонкий шум */
     background: url('icons/noise.svg');
-    opacity: 0.07; 
+    opacity: 0.1; 
     pointer-events: none;
     z-index: 9999;
 }
@@ -17,7 +17,7 @@ body::before {
     --glass-edge: rgba(255, 255, 255, 0.8);
     --dark-edge: rgba(255, 255, 255, 0.8); 
     --text-main: #1a1a1b;
-    
+
     /* Цвета сфер для светлой темы */
     --sphere-1: #989898;
     --sphere-2: #9d9da1;
@@ -33,7 +33,7 @@ body.dark-theme {
     --glass-edge: rgba(255, 255, 255, 0.181);
     --dark-edge: rgba(255, 255, 255, 0.24); 
     --text-main: #e4e6eb;
-    
+
     /* Темные, глубокие цвета сфер */
     --sphere-1: #333338;
     --sphere-2: #3e3f42;
@@ -334,10 +334,12 @@ body {
     will-change: transform, opacity, box-shadow;
     transform: translateZ(0); 
     backface-visibility: hidden;
+    .video-card {
     /* ... твои текущие стили ... */
     transform: translateZ(0); /* Лечит баги рендеринга в Safari */
     overflow: hidden; /* Строго обрезаем всё лишнее */
     border-radius: 16px; /* Чуть меньше радиус для мобилок выглядит аккуратнее */
+}
 }
 
 /* Поддержка эффекта наведения и мобильного тапа */
@@ -405,21 +407,27 @@ video {
 /* 1. Возвращаем иконки в правый угол и убираем фон */
 .controls {
     position: absolute;
+    top: 0; left: 0; width: 100%;
+    padding: 20px;
     top: 0; 
     right: 0; 
     width: auto; /* Чтобы не растягивалось на весь экран */
     padding: 15px;
     display: flex;
+    justify-content: space-between;
     justify-content: flex-end; /* Все иконки справа */
     gap: 8px; /* Расстояние между звуком и фулскрином */
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 5;
+    background: none !important; /* УБИРАЕМ фон */
     background: none !important; /* Убираем темный прямоугольник */
 }
+/* Добавляем тень иконкам, чтобы они были видны без подложки */
 
 /* 2. Тень для иконок, чтобы они не терялись на белом фоне видео */
 .ctrl-btn svg {
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.8)); 
     filter: drop-shadow(0 0 3px rgba(0,0,0,0.8));
 }
 
@@ -429,6 +437,8 @@ video {
 }
 
 .ctrl-btn {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
     background: rgba(0, 0, 0, 0.75); /* Сделали фон чуть плотнее */
     /* backdrop-filter удален полностью */
     border: 1px solid rgba(255,255,255,0.2);
@@ -440,6 +450,7 @@ video {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: background 0.2s;
     transition: background 0.2s, transform 0.2s;
 }
 
@@ -447,6 +458,7 @@ video {
     background: rgba(0, 0, 0, 0.95); /* При наведении почти черный */
     transform: scale(1.05); /* Легкое увеличение для отзывчивости */
 }
+.ctrl-btn:hover { background: rgba(0, 0, 0, 0.9); }
 .ctrl-btn svg { width: 18px; height: 18px; }
 
 /* --- ПАНЕЛЬ УПРАВЛЕНИЯ ВНИЗУ --- */
@@ -650,27 +662,27 @@ footer {
 @media (max-width: 600px) {
     /* Жестко скрываем кнопку темы на телефонах, чтобы не лагало */
     .theme-toggle-btn { display: none !important; }
-    
+
     .main-glass-panel { padding: 25px 15px; margin: 15px; }
-    
+
     /* Центрируем бейджи под био */
     .badges-box { justify-content: center; margin-top: 10px; }
-    
+
     .services-row { grid-template-columns: 1fr; gap: 15px; }
     .process-step { min-width: 100%; padding: 20px 15px; }
-    
+
     /* Видео: делаем в 1 колонку по центру, чтобы смотрелось как в TikTok/Reels */
     .video-grid { grid-template-columns: 1fr; gap: 30px; }
     .video-card { 
         max-width: 320px; /* Ограничиваем ширину, чтобы не было слишком огромным */
         margin: 0 auto; 
     }
-    
+
     .video-label { font-size: 0.85rem; padding: 8px 18px; bottom: 15px; }
     .ctrl-btn { width: 44px; height: 44px; } /* Делаем кнопки чуть больше для пальцев */
     .ctrl-btn svg { width: 20px; height: 20px; }
     .bottom-controls { padding: 15px; }
-    
+
     /* Фикс плашек контактов (чтобы не вылезали за края) */
     .contacts-list { flex-direction: column; align-items: center; }
     .contact-item { min-width: 100%; max-width: 100%; padding: 15px 20px; }
@@ -815,13 +827,23 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         grid-template-columns: 1fr; /* Строго одна колонка */
         gap: 20px; /* Уменьшаем отступ между видео */
     }
-    
+
     /* Баджи в 2 ряда аккуратно */
     .bio-badges {
         justify-content: center;
         margin-bottom: 30px;
     }
     @media (max-width: 768px) {
+        /* Добавляем "воздуха" с боков для текста */
+    .hero {
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 40px; /* Немного уменьшим отступ снизу */
+    }
+
+    .bio-badges {
+        padding-left: 10px;
+        padding-right: 10px;
         @media (max-width: 768px) {
     /* 1. Скрываем нижнюю панель (прогресс-бар) по умолчанию на мобилках */
     .video-card .bottom-controls {
@@ -831,6 +853,10 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
+    /* Чтобы заголовок не был слишком длинным и не прыгал */
+    .hero h1 {
+        word-wrap: break-word;
+        padding: 0 10px;
     /* 2. Показываем прогресс-бар ТОЛЬКО когда карточка активна (после тапа) */
     .video-card.mobile-active .bottom-controls {
         opacity: 1 !important;
@@ -848,7 +874,7 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         backdrop-filter: blur(5px); /* На компе 10-12px, тут ставим 5px */
         -webkit-backdrop-filter: blur(5px);
     }
-    
+
     /* Сферы можно вообще немного приглушить или уменьшить блюр */
     .sphere {
         filter: blur(40px); /* Было 80px */
