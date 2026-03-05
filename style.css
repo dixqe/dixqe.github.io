@@ -840,6 +840,7 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         padding-right: 20px;
         margin-bottom: 40px; /* Немного уменьшим отступ снизу */
     }
+}
 
     .bio-badges {
         padding-left: 10px;
@@ -852,6 +853,7 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         transform: translateY(10px); /* Легкое смещение вниз для красоты появления */
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
+}
 
     /* Чтобы заголовок не был слишком длинным и не прыгал */
     .hero h1 {
