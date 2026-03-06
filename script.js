@@ -349,19 +349,18 @@ if (playPromise !== undefined) {
 
     const observerOptions = {
         root: null,
-        rootMargin: '0px',
-        threshold: 0.15 
+        rootMargin: '-10% 0px',
+        threshold: 0.1
     };
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-            } else {
-                entry.target.classList.remove('visible');
+                observer.unobserve(entry.target);
             }
         });
-   }, observerOptions);
+    }, observerOptions);
 
     document.querySelectorAll('.fade-up').forEach(el => {
         observer.observe(el);
