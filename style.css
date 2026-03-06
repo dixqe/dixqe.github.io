@@ -26,6 +26,12 @@ body::before {
 }
 
 /* ТЕМНАЯ ТЕМА (КЛАСС-МОДИФИКАТОР) */
+body.dark-theme .step-num {
+    background: rgba(255, 255, 255, 0.85);
+    color: #1a1a1a;
+    box-shadow: 0 0 18px rgba(255,255,255,0.35);
+}
+
 body.dark-theme {
     --bg-base: #1d1e1f;
     --panel-glass: rgba(35, 36, 37, 0.28);
@@ -807,77 +813,66 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         width: 24px; /* Было 20px, делаем больше для пальца */
         height: 24px;
     }
-}.container {
-        width: 92%; /* Чуть шире на мобилках */
-        padding-top: 80px; /* Меньше отступ сверху */
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 92%;
+        padding-top: 80px;
     }
 
     .hero h1 {
-        font-size: 2.5rem; /* Уменьшаем с 4.5rem, чтобы влезло */
+        font-size: 2.5rem;
         margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        padding: 0 10px;
     }
 
     .hero p {
         font-size: 1rem;
-        max-width: 100%; /* Текст на всю ширину */
+        max-width: 100%;
     }
 
-    /* Сетка в 1 колонку, но с меньшими дырками */
-    .portfolio-grid {
-        grid-template-columns: 1fr; /* Строго одна колонка */
-        gap: 20px; /* Уменьшаем отступ между видео */
-    }
-
-    /* Баджи в 2 ряда аккуратно */
-    .bio-badges {
-        justify-content: center;
-        margin-bottom: 30px;
-    }
-    @media (max-width: 768px) {
-        /* Добавляем "воздуха" с боков для текста */
     .hero {
         padding-left: 20px;
         padding-right: 20px;
-        margin-bottom: 40px; /* Немного уменьшим отступ снизу */
+        margin-bottom: 40px;
     }
-}
+
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
 
     .bio-badges {
+        justify-content: center;
+        margin-bottom: 30px;
         padding-left: 10px;
         padding-right: 10px;
-        @media (max-width: 768px) {
-    /* 1. Скрываем нижнюю панель (прогресс-бар) по умолчанию на мобилках */
+    }
+
+    /* Скрываем нижнюю панель по умолчанию на мобилках */
     .video-card .bottom-controls {
         opacity: 0 !important;
-        pointer-events: none; /* Чтобы случайно не нажать на полосу, пока она скрыта */
-        transform: translateY(10px); /* Легкое смещение вниз для красоты появления */
+        pointer-events: none;
+        transform: translateY(10px);
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
-}
 
-    /* Чтобы заголовок не был слишком длинным и не прыгал */
-    .hero h1 {
-        word-wrap: break-word;
-        padding: 0 10px;
-    /* 2. Показываем прогресс-бар ТОЛЬКО когда карточка активна (после тапа) */
+    /* Показываем прогресс-бар только когда карточка активна */
     .video-card.mobile-active .bottom-controls {
         opacity: 1 !important;
         pointer-events: auto;
         transform: translateY(0);
-        /* Оставляем твой градиент, чтобы цифры были читаемы на фоне видео */
         background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
     }
-    
-    /* Все остальные кнопки (мультимедиа сверху) останутся как есть, 
-       так как мы их здесь не переопределяем */
-}
-}
+
     .glass-panel, .video-label, .contact-item, .badge {
-        backdrop-filter: blur(5px); /* На компе 10-12px, тут ставим 5px */
+        backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
     }
 
-    /* Сферы можно вообще немного приглушить или уменьшить блюр */
     .sphere {
-        filter: blur(40px); /* Было 80px */
+        filter: blur(40px);
     }
+}
