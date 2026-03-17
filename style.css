@@ -6,7 +6,7 @@ body::before {
     background: url('icons/noise.svg');
     opacity: 0.1; 
     pointer-events: none;
-    z-index: 9999;
+    z-index: 10;
 }
 
 :root {
@@ -349,17 +349,10 @@ body {
     aspect-ratio: 9/16;
     border: 3px solid var(--glass-dark);
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    /* Убраны background-color transition */
     transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
     will-change: transform, opacity, box-shadow;
     transform: translateZ(0); 
     backface-visibility: hidden;
-    .video-card {
-    /* ... твои текущие стили ... */
-    transform: translateZ(0); /* Лечит баги рендеринга в Safari */
-    overflow: hidden; /* Строго обрезаем всё лишнее */
-    border-radius: 16px; /* Чуть меньше радиус для мобилок выглядит аккуратнее */
-}
 }
 
 /* Поддержка эффекта наведения и мобильного тапа */
@@ -399,6 +392,11 @@ video {
     transform: scale(1.015);
 }
 
+/* 3й ролик (Viper) — убираем scale чтобы не было артефактов */
+.video-card:nth-child(3) video {
+    transform: none;
+}
+
 .video-label {
     position: absolute;
     bottom: 20px;
@@ -419,7 +417,7 @@ video {
 
 .video-card:hover .video-label,
 .video-card.mobile-active .video-label {
-    transform: translateX(-50%) translateY(-35px);
+    opacity: 0;
     color: var(--accent);
     border-color: var(--accent);
 }
@@ -427,35 +425,21 @@ video {
 /* 1. Возвращаем иконки в правый угол и убираем фон */
 .controls {
     position: absolute;
-    top: 0; left: 0; width: 100%;
-    padding: 20px;
-    top: 0; 
-    right: 0; 
-    width: auto; /* Чтобы не растягивалось на весь экран */
+    top: 0;
+    right: 0;
+    width: 100%;
     padding: 15px;
     display: flex;
-    justify-content: space-between;
-    justify-content: flex-end; /* Все иконки справа */
-    gap: 8px; /* Расстояние между звуком и фулскрином */
+    justify-content: flex-end;
+    gap: 8px;
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 5;
-    background: none !important; /* УБИРАЕМ фон */
-    background: none !important; /* Убираем темный прямоугольник */
+    background: none !important;
 }
 /* Добавляем тень иконкам, чтобы они были видны без подложки */
 
 /* 2. Тень для иконок, чтобы они не терялись на белом фоне видео */
-.ctrl-btn svg {
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.8)); 
-    filter: drop-shadow(0 0 3px rgba(0,0,0,0.8));
-}
-
-.video-card:hover .controls,
-.video-card.mobile-active .controls { 
-    opacity: 1; 
-}
-
 .ctrl-btn {
     background: rgba(0, 0, 0, 0.75);
     border: 1px solid rgba(255,255,255,0.2);
@@ -470,12 +454,21 @@ video {
     transition: background 0.2s, transform 0.2s;
 }
 
-.ctrl-btn:hover { 
-    background: rgba(0, 0, 0, 0.95); /* При наведении почти черный */
-    transform: scale(1.05); /* Легкое увеличение для отзывчивости */
+.ctrl-btn svg {
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.8));
+    width: 18px;
+    height: 18px;
 }
-.ctrl-btn:hover { background: rgba(0, 0, 0, 0.9); }
-.ctrl-btn svg { width: 18px; height: 18px; }
+
+.ctrl-btn:hover { 
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+.video-card:hover .controls,
+.video-card.mobile-active .controls { 
+    opacity: 1; 
+}
 
 /* --- ПАНЕЛЬ УПРАВЛЕНИЯ ВНИЗУ --- */
 .bottom-controls {
@@ -895,72 +888,34 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
     }
 }
 @media (max-width: 768px) {
-    /* 1. Всегда показываем верхние кнопки (звук, фулскрин) */
+    /* Убираем тяжёлый blur на мобиле — главная причина лагов на iOS */
+    .dark-glass {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    .main-glass-panel {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .theme-toggle-btn {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    /* Верхние кнопки всегда видны */
     .video-card .controls {
         opacity: 1 !important;
-        background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%); /* Подложка, чтобы было видно на светлом видео */
+        background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
         padding-bottom: 20px;
     }
 
-    /* 2. Нижняя панель тоже всегда видна, но чуть компактнее */
-    .video-card .bottom-controls {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
-    }
-
-    /* 3. Увеличиваем размер кнопок под палец */
-    .ctrl-btn svg, .play-pause-btn svg {
-        width: 24px; /* Было 20px, делаем больше для пальца */
-        height: 24px;
-    }
-}
-
-@media (max-width: 768px) {
-    .container {
-        width: 92%;
-        padding-top: 80px;
-    }
-
-    .hero h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        word-wrap: break-word;
-        padding: 0 10px;
-    }
-
-    .hero p {
-        font-size: 1rem;
-        max-width: 100%;
-    }
-
-    .hero {
-        padding-left: 20px;
-        padding-right: 20px;
-        margin-bottom: 40px;
-    }
-
-    .portfolio-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .bio-badges {
-        justify-content: center;
-        margin-bottom: 30px;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    /* Скрываем нижнюю панель по умолчанию на мобилках */
+    /* Нижняя панель скрыта пока не тапнули */
     .video-card .bottom-controls {
         opacity: 0 !important;
         pointer-events: none;
         transform: translateY(10px);
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
-
-    /* Показываем прогресс-бар только когда карточка активна */
     .video-card.mobile-active .bottom-controls {
         opacity: 1 !important;
         pointer-events: auto;
@@ -968,12 +923,52 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
     }
 
-    .glass-panel, .video-label, .contact-item, .badge {
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
+    /* Кнопки под палец */
+    .ctrl-btn svg, .play-pause-btn svg {
+        width: 24px;
+        height: 24px;
     }
 
-    .sphere {
-        filter: blur(40px);
+    .glass-panel, .video-label, .contact-item, .badge {
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
     }
+    .sphere { filter: blur(40px); }
+
+    /* Stagger анимации только на мобиле */
+    .service-card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .service-card.mob-visible { opacity: 1; transform: translateY(0); }
+    .service-card:nth-child(1) { transition-delay: 0s; }
+    .service-card:nth-child(2) { transition-delay: 0.07s; }
+    .service-card:nth-child(3) { transition-delay: 0.14s; }
+    .service-card:nth-child(4) { transition-delay: 0.21s; }
+    .service-card:nth-child(5) { transition-delay: 0.28s; }
+
+    .process-step {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .process-step.mob-visible { opacity: 1; transform: translateY(0); }
+    .process-step:nth-child(2) { transition-delay: 0s; }
+    .process-step:nth-child(3) { transition-delay: 0.08s; }
+    .process-step:nth-child(4) { transition-delay: 0.16s; }
+    .process-step:nth-child(5) { transition-delay: 0.24s; }
+
+    .video-card {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .video-card.mob-visible { opacity: 1; transform: translateY(0); }
+    .video-card:nth-child(1) { transition-delay: 0s; }
+    .video-card:nth-child(2) { transition-delay: 0.08s; }
+    .video-card:nth-child(3) { transition-delay: 0.16s; }
+    .video-card:nth-child(4) { transition-delay: 0s; }
+    .video-card:nth-child(5) { transition-delay: 0.08s; }
+    .video-card:nth-child(6) { transition-delay: 0.16s; }
 }
