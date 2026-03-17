@@ -362,7 +362,21 @@ if (playPromise !== undefined) {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.fade-up').forEach(el => {
-        observer.observe(el);
-    });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Stagger анимации только на мобиле
+    if (isTouchDevice || window.innerWidth <= 768) {
+        const mobObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('mob-visible');
+                    mobObserver.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '-5% 0px', threshold: 0.05 });
+
+        document.querySelectorAll('.service-card, .process-step, .video-card').forEach(el => {
+            mobObserver.observe(el);
+        });
+    }
 });
