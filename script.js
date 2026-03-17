@@ -362,5 +362,7 @@ if (playPromise !== undefined) {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-up').forEach(el => {
+        observer.observe(el);
+    });
 });
