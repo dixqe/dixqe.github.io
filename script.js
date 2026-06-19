@@ -1,31 +1,25 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // --- ЛОГИКА ТЕМЫ (СВЕТЛАЯ ПО УМОЛЧАНИЮ) ---
+
+    // --- ЛОГИКА ТЕМЫ ---
     const themeToggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
 
-    // Проверяем, есть ли сохраненная ТЕМНАЯ тема в localStorage
     if (localStorage.getItem('theme') === 'dark') {
         body.classList.add('dark-theme');
     }
 
     themeToggleBtn.addEventListener('click', () => {
-        // Переключаем класс темной темы
         body.classList.toggle('dark-theme');
-        
-        // Сохраняем выбор пользователя
-        if (body.classList.contains('dark-theme')) {
-            localStorage.setItem('theme', 'dark');
-        } else {
-            localStorage.setItem('theme', 'light');
-        }
+        localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
     });
-    // ---------------------------
+
+    // --- ВИДЕО ---
     const videoCards = document.querySelectorAll(".video-card");
-    let globalMuted = true; 
-    let hoveredVideo = null; 
-    
-    // Определяем, с мобилки ли сидит юзер
-    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    let globalMuted = true;
+    let globalVolume = 1;
+    let hoveredVideo = null;
+
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
     const formatTime = (time) => {
         const min = Math.floor(time / 60);
@@ -35,66 +29,58 @@ document.addEventListener("DOMContentLoaded", function() {
 
     videoCards.forEach(function(card) {
         const video = card.querySelector("video");
-        
+
+        // Создаём img-обложку из нативного poster и убираем атрибут
         let posterImg = null;
-        if (video && video.hasAttribute("poster")) {
+        if (video && video.getAttribute("poster")) {
             posterImg = document.createElement("img");
             posterImg.src = video.getAttribute("poster");
             posterImg.className = "custom-poster";
+            posterImg.alt = "";
             video.parentNode.insertBefore(posterImg, video.nextSibling);
             video.removeAttribute("poster");
         }
 
-        const muteBtn = card.querySelector(".mute-btn");
-        const muteLine = muteBtn.querySelector(".mute-line");
-        const fsBtn = card.querySelector(".fs-btn");
-        // --- ФИКС КНОПКИ ЗВУКА ДЛЯ МОБИЛОК И ПК ---
-        if (muteBtn) {
-            muteBtn.addEventListener("click", function(e) {
-                e.preventDefault();
-                e.stopPropagation(); // Не даем клику перейти на саму карточку
-                
-                globalMuted = !globalMuted;
-                video.muted = globalMuted;
-                
-                if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-                if (volSlider) volSlider.value = globalMuted ? 0 : 1;
-            });
+        // preload="metadata" — грузим только первый кадр и длительность
+        if (video) {
+            video.preload = "metadata";
         }
-        
+
+        const muteBtn = card.querySelector(".mute-btn");
+        const muteLine = muteBtn ? muteBtn.querySelector(".mute-line") : null;
+        const fsBtn = card.querySelector(".fs-btn");
         const progressContainer = card.querySelector(".progress-container");
         const progressFill = card.querySelector(".progress-fill");
         const timeDisplay = card.querySelector(".time-display");
         const volSlider = card.querySelector(".vol-slider");
         const bottomControls = card.querySelector(".bottom-controls");
-        
         const playPauseBtn = card.querySelector(".play-pause-btn");
         const iconPlay = card.querySelector(".icon-play");
         const iconPause = card.querySelector(".icon-pause");
 
+        let isHovered = false;
+        let leaveTimer = null;
+        let animationFrameId = null;
         let idleTimer;
+
         const wakeUpInterface = () => {
-            const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || (video && video.webkitDisplayingFullscreen);
-            if (!isFullscreen) return; 
-            
+            const isFullscreen = document.fullscreenElement
+                || document.webkitFullscreenElement
+                || (video && video.webkitDisplayingFullscreen);
+            if (!isFullscreen) return;
             card.classList.remove("hide-interface");
             clearTimeout(idleTimer);
-            
             idleTimer = setTimeout(() => {
-                if (video && !video.paused) {
-                    card.classList.add("hide-interface");
-                }
-            }, 2000); 
+                if (video && !video.paused) card.classList.add("hide-interface");
+            }, 2000);
         };
 
         card.addEventListener("mousemove", wakeUpInterface);
         card.addEventListener("mousedown", wakeUpInterface);
-        
+
         if (video) {
             video.muted = true;
             if (muteLine) muteLine.style.display = "block";
-
-            let animationFrameId;
 
             const updateProgressBar = () => {
                 if (video && !video.paused && video.duration) {
@@ -107,17 +93,20 @@ document.addEventListener("DOMContentLoaded", function() {
             video.addEventListener("play", () => {
                 if (iconPlay) iconPlay.style.display = "none";
                 if (iconPause) iconPause.style.display = "block";
-                if (posterImg) posterImg.classList.add("hidden"); 
-                wakeUpInterface(); 
-                animationFrameId = requestAnimationFrame(updateProgressBar); 
+                if (posterImg) posterImg.classList.add("hidden");
+                wakeUpInterface();
+                animationFrameId = requestAnimationFrame(updateProgressBar);
             });
-            
+
             video.addEventListener("pause", () => {
                 if (iconPlay) iconPlay.style.display = "block";
                 if (iconPause) iconPause.style.display = "none";
-                card.classList.remove("hide-interface"); 
+                card.classList.remove("hide-interface");
                 clearTimeout(idleTimer);
-                cancelAnimationFrame(animationFrameId); 
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
             });
 
             video.addEventListener("timeupdate", () => {
@@ -126,15 +115,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
                     }
                     if (video.paused && progressFill) {
-                        const progress = (video.currentTime / video.duration) * 100;
-                        progressFill.style.width = progress + "%";
+                        progressFill.style.width = (video.currentTime / video.duration) * 100 + "%";
                     }
                 }
             });
 
             if (progressContainer) {
                 progressContainer.addEventListener("click", (e) => {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                     const rect = progressContainer.getBoundingClientRect();
                     const pos = (e.clientX - rect.left) / rect.width;
                     video.currentTime = pos * video.duration;
@@ -144,8 +132,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (volSlider) {
                 volSlider.addEventListener("input", (e) => {
                     e.stopPropagation();
-                    video.volume = e.target.value;
-                    if (video.volume > 0) {
+                    const val = parseFloat(e.target.value);
+                    video.volume = val;
+                    globalVolume = val;
+                    if (val > 0) {
                         video.muted = false;
                         globalMuted = false;
                         if (muteLine) muteLine.style.display = "none";
@@ -157,6 +147,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
                 volSlider.addEventListener("click", (e) => e.stopPropagation());
             }
+        }
+
+        if (muteBtn) {
+            muteBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                globalMuted = !globalMuted;
+                video.muted = globalMuted;
+                if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
+                if (volSlider) volSlider.value = globalMuted ? 0 : globalVolume;
+            });
         }
 
         if (playPauseBtn) {
@@ -171,106 +172,115 @@ document.addEventListener("DOMContentLoaded", function() {
             bottomControls.addEventListener("click", (e) => e.stopPropagation());
         }
 
-        card.addEventListener("mouseenter", function() {
-            if (isTouchDevice) return; 
-            if (posterImg) posterImg.classList.add("hidden"); 
-            if (video) {
-                hoveredVideo = video; 
-                video.muted = globalMuted;
-                if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-                if (volSlider) volSlider.value = globalMuted ? 0 : video.volume;
-                
-                video.currentTime = 0; // Гарантируем, что старт всегда с начала
-let playPromise = video.play();
-if (playPromise !== undefined) {
-    playPromise.catch((error) => {
-        console.log("Play interrupted or not ready", error);
-    });
-}
+        // Безопасный запуск с проверкой readyState
+        const tryPlay = () => {
+            video.currentTime = 0;
+            video.muted = globalMuted;
+            if (!globalMuted) video.volume = globalVolume;
+            if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
+            if (volSlider) volSlider.value = globalMuted ? 0 : globalVolume;
+            video.play().catch((err) => {
+                console.log("Play interrupted:", err);
+            });
+        };
+
+        const startVideo = () => {
+            if (video.readyState >= 2) {
+                tryPlay();
+            } else {
+                video.addEventListener('canplay', tryPlay, { once: true });
             }
+        };
+
+        card.addEventListener("mouseenter", function() {
+            if (isTouchDevice) return;
+
+            if (leaveTimer) {
+                clearTimeout(leaveTimer);
+                leaveTimer = null;
+            }
+
+            isHovered = true;
+            hoveredVideo = video;
+            card.style.willChange = 'transform, box-shadow';
+            card.dataset.hovered = 'true';
+
+            if (posterImg) posterImg.classList.add("hidden");
+            startVideo();
         });
 
         card.addEventListener("mouseleave", function() {
-            if (isTouchDevice) return; 
-            if (hoveredVideo === video) hoveredVideo = null; 
+            if (isTouchDevice) return;
 
-            setTimeout(() => {
-                const isFullscreen = document.fullscreenElement || 
-                                   document.webkitFullscreenElement || 
-                                   (video && video.webkitDisplayingFullscreen);
+            isHovered = false;
+            if (hoveredVideo === video) hoveredVideo = null;
+            card.style.willChange = 'auto';
+            card.dataset.hovered = 'false';
 
-                if (isFullscreen) return; 
+            leaveTimer = setTimeout(() => {
+                const isFullscreen = document.fullscreenElement
+                    || document.webkitFullscreenElement
+                    || (video && video.webkitDisplayingFullscreen);
+                if (isFullscreen) return;
 
                 if (video) {
+                    if (posterImg) posterImg.classList.remove("hidden");
                     video.pause();
-                    video.currentTime = 0; 
-                    if (posterImg) posterImg.classList.remove("hidden"); 
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                        animationFrameId = null;
+                    }
+                    video.currentTime = 0;
                 }
             }, 50);
         });
 
-        // --- ЛОГИКА КЛИКОВ (И ДЛЯ ПК И ДЛЯ ТАЧЕЙ) ---
+        // --- ЛОГИКА КЛИКОВ ---
         card.addEventListener("click", function(e) {
-            if (e.target.closest('.fs-btn') || e.target.closest('.bottom-controls')) return; 
+            if (e.target.closest('.fs-btn')
+                || e.target.closest('.mute-btn')
+                || e.target.closest('.bottom-controls')) return;
             e.preventDefault();
 
             if (isTouchDevice) {
                 if (!card.classList.contains('mobile-active')) {
-                    // Первый тап на мобильном: активируем карточку и видео
                     document.querySelectorAll('.video-card.mobile-active').forEach(c => {
                         c.classList.remove('mobile-active');
                         const v = c.querySelector('video');
                         const p = c.querySelector('.custom-poster');
-                        if(v) { v.pause(); v.currentTime = 0; }
-                        if(p) p.classList.remove('hidden');
+                        if (v) { v.pause(); v.currentTime = 0; }
+                        if (p) p.classList.remove('hidden');
                     });
-                    
+
                     card.classList.add('mobile-active');
                     if (posterImg) posterImg.classList.add("hidden");
                     if (video) {
                         hoveredVideo = video;
-                        video.muted = globalMuted;
-                        if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-                        if (volSlider) volSlider.value = globalMuted ? 0 : video.volume;
-                        
-                        let playPromise = video.play();
-                        if (playPromise !== undefined) {
-                            playPromise.catch(() => {});
-                        }
+                        startVideo();
                     }
                 } else {
-                    // Второй тап на мобильном: Пауза/Воспроизведение
                     if (video) {
-                        if (video.paused) {
-                            video.play();
-                        } else {
-                            video.pause();
-                        }
+                        if (video.paused) video.play();
+                        else video.pause();
                     }
                 }
-                return; // На мобильном дальше код не идет
+                return;
             }
 
-            // На ПК: Клик включает/выключает звук
-            globalMuted = !globalMuted; 
+            // ПК: клик = переключить звук
+            globalMuted = !globalMuted;
             video.muted = globalMuted;
             if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-            if (volSlider) volSlider.value = globalMuted ? 0 : 1;
+            if (volSlider) volSlider.value = globalMuted ? 0 : globalVolume;
         });
 
-       if (fsBtn) {
+        if (fsBtn) {
             fsBtn.addEventListener("click", function(e) {
                 e.preventDefault();
-                e.stopPropagation(); // Не даем клику уйти на карточку
-                
-                // 1. СПЕЦИАЛЬНО ДЛЯ IPHONE (iOS Safari)
-                // На iOS разворачивать можно ТОЛЬКО сам тег video
+                e.stopPropagation();
                 if (video && video.webkitEnterFullscreen) {
                     video.webkitEnterFullscreen();
-                } 
-                // 2. Стандартный способ (ПК и Android)
-                // Разворачиваем всю карточку с контроллами
-                else if (card.requestFullscreen) {
+                } else if (card.requestFullscreen) {
                     card.requestFullscreen();
                 } else if (card.webkitRequestFullscreen) {
                     card.webkitRequestFullscreen();
@@ -279,54 +289,52 @@ if (playPromise !== undefined) {
         }
     });
 
+    // --- Клик вне карточки на мобильном ---
     document.addEventListener("click", function(e) {
         if (isTouchDevice && !e.target.closest('.video-card')) {
             document.querySelectorAll('.video-card.mobile-active').forEach(c => {
                 c.classList.remove('mobile-active');
                 const v = c.querySelector('video');
                 const p = c.querySelector('.custom-poster');
-                if(v) { v.pause(); v.currentTime = 0; }
-                if(p) p.classList.remove('hidden');
+                if (v) { v.pause(); v.currentTime = 0; }
+                if (p) p.classList.remove('hidden');
             });
         }
     });
 
+    // --- Space для паузы ---
     document.addEventListener("keydown", function(e) {
         if (e.code === "Space") {
             let activeVideo = null;
             const fsElement = document.fullscreenElement || document.webkitFullscreenElement;
-
             if (fsElement) {
                 activeVideo = fsElement.querySelector("video");
             } else if (hoveredVideo) {
                 activeVideo = hoveredVideo;
             }
-
             if (activeVideo) {
-                e.preventDefault(); 
-                if (activeVideo.paused) {
-                    activeVideo.play();
-                } else {
-                    activeVideo.pause();
-                }
+                e.preventDefault();
+                activeVideo.paused ? activeVideo.play() : activeVideo.pause();
             }
         }
     });
 
+    // --- Выход из fullscreen ---
     const handleExit = () => {
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
             videoCards.forEach(card => {
-                card.classList.remove("hide-interface"); 
-                
+                card.classList.remove("hide-interface");
                 const video = card.querySelector("video");
                 const posterImg = card.querySelector(".custom-poster");
+                const isActive = card.classList.contains('mobile-active');
+                const hovered = card.dataset.hovered === 'true';
 
-                if (video && !card.matches(':hover') && !card.classList.contains('mobile-active')) {
+                if (video && !hovered && !isActive) {
                     video.pause();
-                    video.currentTime = 0; 
-                    if (posterImg) posterImg.classList.remove("hidden"); 
-                } else if (video && (card.matches(':hover') || card.classList.contains('mobile-active'))) {
-                    video.play();
+                    video.currentTime = 0;
+                    if (posterImg) posterImg.classList.remove("hidden");
+                } else if (video && (hovered || isActive)) {
+                    video.play().catch(() => {});
                 }
             });
         }
@@ -334,25 +342,42 @@ if (playPromise !== undefined) {
     document.addEventListener("fullscreenchange", handleExit);
     document.addEventListener("webkitfullscreenchange", handleExit);
 
+    // --- Кнопка копирования с fallback ---
     const copyButtons = document.querySelectorAll(".copy-btn");
     copyButtons.forEach(function(btn) {
         btn.addEventListener("click", function() {
             const textToCopy = btn.getAttribute("data-copy");
-            navigator.clipboard.writeText(textToCopy).then(function() {
-                btn.classList.add("success");
-                setTimeout(() => { btn.classList.remove("success"); }, 1500);
-            }).catch(err => {
-                console.error('Ошибка копирования: ', err);
-            });
+
+            const doFallback = () => {
+                const ta = document.createElement("textarea");
+                ta.value = textToCopy;
+                ta.style.cssText = "position:fixed;opacity:0;pointer-events:none;";
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    btn.classList.add("success");
+                    setTimeout(() => btn.classList.remove("success"), 1500);
+                } catch (err) {
+                    console.error('Fallback copy failed:', err);
+                }
+                document.body.removeChild(ta);
+            };
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        btn.classList.add("success");
+                        setTimeout(() => btn.classList.remove("success"), 1500);
+                    })
+                    .catch(doFallback);
+            } else {
+                doFallback();
+            }
         });
     });
 
-    const observerOptions = {
-        root: null,
-        rootMargin: '-10% 0px',
-        threshold: 0.1
-    };
-
+    // --- Fade-up анимации ---
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -360,9 +385,7 @@ if (playPromise !== undefined) {
                 observer.unobserve(entry.target);
             }
         });
-    }, observerOptions);
+    }, { root: null, rootMargin: '-10% 0px', threshold: 0.1 });
 
-    document.querySelectorAll('.fade-up').forEach(el => {
-        observer.observe(el);
-    });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 });
