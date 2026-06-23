@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // --- ВИДЕО ---
-    const videoCards = document.querySelectorAll(".video-card");
+    const videoCards = document.querySelectorAll(".video-card, .showreel-card");
     let globalMuted = true;
     let globalVolume = 1;
     let hoveredVideo = null;
@@ -174,7 +174,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Безопасный запуск с проверкой readyState
         const tryPlay = () => {
-            video.currentTime = 0;
+            // ИСКЛЮЧЕНИЕ ДЛЯ ШОУРИЛА: не сбрасываем время при старте, если он уже шел
+            if (!card.classList.contains('showreel-card')) {
+                video.currentTime = 0;
+            }
             video.muted = globalMuted;
             if (!globalMuted) video.volume = globalVolume;
             if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
@@ -212,28 +215,32 @@ document.addEventListener("DOMContentLoaded", function() {
         card.addEventListener("mouseleave", function() {
             if (isTouchDevice) return;
 
-            isHovered = false;
-            if (hoveredVideo === video) hoveredVideo = null;
-            card.style.willChange = 'auto';
-            card.dataset.hovered = 'false';
+    // Сбрасываем состояния
+    isHovered = false;
+    if (hoveredVideo === video) hoveredVideo = null;
+    card.style.willChange = 'auto';
+    card.dataset.hovered = 'false';
 
-            leaveTimer = setTimeout(() => {
-                const isFullscreen = document.fullscreenElement
-                    || document.webkitFullscreenElement
-                    || (video && video.webkitDisplayingFullscreen);
-                if (isFullscreen) return;
+    // ВОТ ЗДЕСЬ ВСЯ МАГИЯ:
+    if (video) {
+        // Мы возвращаем обложку (убираем класс hidden) ТОЛЬКО если это НЕ шоурил
+        if (!card.classList.contains('showreel-card')) {
+            if (posterImg) posterImg.classList.remove("hidden");
+        }
+        
+        video.pause();
+        
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
 
-                if (video) {
-                    if (posterImg) posterImg.classList.remove("hidden");
-                    video.pause();
-                    if (animationFrameId) {
-                        cancelAnimationFrame(animationFrameId);
-                        animationFrameId = null;
-                    }
-                    video.currentTime = 0;
-                }
-            }, 50);
-        });
+        // Сбрасываем время на 0 ТОЛЬКО если это НЕ шоурил
+        if (!card.classList.contains('showreel-card')) {
+            video.currentTime = 0;
+        }
+    }
+});
 
         // --- ЛОГИКА КЛИКОВ ---
         card.addEventListener("click", function(e) {
@@ -248,7 +255,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         c.classList.remove('mobile-active');
                         const v = c.querySelector('video');
                         const p = c.querySelector('.custom-poster');
-                        if (v) { v.pause(); v.currentTime = 0; }
+                        if (v) { 
+                            v.pause(); 
+                            if (!c.classList.contains('showreel-card')) v.currentTime = 0; 
+                        }
                         if (p) p.classList.remove('hidden');
                     });
 
@@ -296,7 +306,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 c.classList.remove('mobile-active');
                 const v = c.querySelector('video');
                 const p = c.querySelector('.custom-poster');
-                if (v) { v.pause(); v.currentTime = 0; }
+                if (v) { 
+                    v.pause(); 
+                    if (!c.classList.contains('showreel-card')) v.currentTime = 0; 
+                }
                 if (p) p.classList.remove('hidden');
             });
         }
@@ -331,14 +344,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 if (video && !hovered && !isActive) {
                     video.pause();
-                    video.currentTime = 0;
-                    if (posterImg) posterImg.classList.remove("hidden");
+                    if (!card.classList.contains('showreel-card')) {
+                        video.currentTime = 0;
+                    }
+                    // И ТУТ ИСКЛЮЧАЕМ SHOWREEL ПРИ ВЫХОДЕ ИЗ ФУЛСКРИНА
+                    if (posterImg && !card.classList.contains('showreel-card')) {
+                        posterImg.classList.remove("hidden");
+                    }
                 } else if (video && (hovered || isActive)) {
                     video.play().catch(() => {});
                 }
             });
         }
     };
+
     document.addEventListener("fullscreenchange", handleExit);
     document.addEventListener("webkitfullscreenchange", handleExit);
 
@@ -388,4 +407,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }, { root: null, rootMargin: '-10% 0px', threshold: 0.1 });
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
 });
