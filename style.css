@@ -23,6 +23,10 @@ body::before {
     --sphere-2: #9d9da1;
     --sphere-3: #939395;
     --sphere-4: #838486c4;
+
+    /* ПЕРЕМЕННЫЕ ДЛЯ ТЕНЕЙ ПРИ НАВЕДЕНИИ (ДЛЯ СВЕТЛОЙ ТЕМЫ - ТЕМНЫЕ ТЕНИ) */
+    --hover-shadow: rgba(0, 0, 0, 0.15);
+    --hover-shadow-strong: rgba(0, 0, 0, 0.2);
 }
 
 /* ТЕМНАЯ ТЕМА (КЛАСС-МОДИФИКАТОР) */
@@ -45,6 +49,10 @@ body.dark-theme {
     --sphere-2: #3e3f42;
     --sphere-3: #323438;
     --sphere-4: #343436c4;
+
+    /* ПЕРЕМЕННЫЕ ДЛЯ ТЕНЕЙ ПРИ НАВЕДЕНИИ (ДЛЯ ТЕМНОЙ ТЕМЫ - СВЕТЛЫЕ ТЕНИ) */
+    --hover-shadow: rgba(255, 255, 255, 0.15);
+    --hover-shadow-strong: rgba(255, 255, 255, 0.25);
 }
 
 * {
@@ -164,7 +172,8 @@ body {
 
 .dark-glass:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15), inset 0 0 15px rgba(255,255,255,0.1);
+    /* ТЕПЕРЬ ТЕНЬ ЗАВИСИТ ОТ ТЕМЫ */
+    box-shadow: 0 15px 35px var(--hover-shadow), inset 0 0 15px rgba(255,255,255,0.1);
 }
 
 .hero {
@@ -355,7 +364,7 @@ body {
     backface-visibility: hidden;
 }
 
-/* Поддержка эффекта наведения и мобильного тапа */
+/* Поддержка эффекта наведения и мобильного тапа для секции My Work */
 .video-card:hover,
 .video-card.mobile-active {
     transform: translateY(-10px) scale(1.01);
@@ -846,12 +855,13 @@ footer {
     align-items: center;
     justify-content: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Базовая тень */
 }
 
 .theme-toggle-btn:hover {
     transform: scale(1.1) rotate(15deg);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    /* ТЕПЕРЬ ТЕНЬ ЗАВИСИТ ОТ ТЕМЫ */
+    box-shadow: 0 6px 20px var(--hover-shadow-strong);
 }
 
 .theme-toggle-btn svg {
@@ -927,4 +937,53 @@ body.dark-theme .theme-toggle-btn .moon-icon { opacity: 0; transform: rotate(90d
         -webkit-backdrop-filter: none;
         background: rgba(44, 45, 49, 0.75);
     }
+}
+
+/* --- СТИЛИ ДЛЯ СЕКЦИИ SHOWREEL --- */
+/* --- СТИЛИ ДЛЯ СЕКЦИИ SHOWREEL --- */
+.showreel-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.showreel-title {
+    display: block;
+    width: fit-content; /* Сужает блок ровно до ширины слова */
+    margin: 0 auto 30px auto; /* Центрирует суженный блок по горизонтали */
+}
+
+.showreel-card {
+    --accent: #ffffff; /* Возвращаем цвет для прогресс-бара и шкалы громкости */
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    transform: translateZ(0); 
+}
+
+.showreel-card video {
+    transform: none !important; 
+    object-fit: cover;
+}
+
+/* --- ДИНАМИЧЕСКАЯ ТЕНЬ И РАМКА ДЛЯ SHOWREEL --- */
+/* Для светлой темы: темная тень (var(--hover-shadow)) */
+.showreel-card:hover,
+.showreel-card.mobile-active {
+    border-color: var(--glass-dark) !important; /* Убираем цветную рамку, делаем нейтральную */
+    box-shadow: 0 15px 35px var(--hover-shadow) !important; 
+}
+
+/* Для темной темы: светлая тень (var(--hover-shadow-strong)) */
+body.dark-theme .showreel-card:hover,
+body.dark-theme .showreel-card.mobile-active {
+    border-color: var(--dark-edge) !important;
+    box-shadow: 0 15px 35px var(--hover-shadow-strong) !important; 
+}
+/* Убираем зум обложки специально для Showreel, так как само видео там тоже не зумируется */
+.showreel-card .custom-poster {
+    transform: none;
+    object-fit: cover;
 }
