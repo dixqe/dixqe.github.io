@@ -127,10 +127,16 @@ document.addEventListener("DOMContentLoaded", function() {
             video.addEventListener("play", () => {
                 if (iconPlay)  iconPlay.style.display  = "none";
                 if (iconPause) iconPause.style.display = "block";
-                if (posterImg) posterImg.classList.add("hidden");
+                // Постер прячем на 'playing', а не здесь —
+                // 'play' срабатывает до рендера первого кадра (→ чёрный экран)
                 hideOverlay();
                 wakeUpInterface();
                 animationFrameId = requestAnimationFrame(updateProgressBar);
+            });
+
+            // 'playing' срабатывает когда первый кадр реально отрисован
+            video.addEventListener("playing", () => {
+                if (posterImg) posterImg.classList.add("hidden");
             });
 
             video.addEventListener("pause", () => {
@@ -306,6 +312,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else if (video && video.paused) {
                         video.play().catch(() => {});
                         hideOverlay();
+                    } else if (video && !video.paused) {
+                        // Видео играет — тап по центру ставит паузу
+                        video.pause();
+                        showOverlay();
                     }
                 }, { passive: false });
             }
