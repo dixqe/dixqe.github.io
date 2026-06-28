@@ -44,8 +44,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (video) video.preload = "metadata";
 
-        // Мобильный оверлей — большая кнопка Play по центру
+        // Мобильный оверлей — только кнопка Play без фона/блюра
         let mobileOverlay = null;
+        let mobilePlayBtn = null;
         if (isTouchDevice) {
             mobileOverlay = document.createElement('div');
             mobileOverlay.className = 'mobile-play-overlay';
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </svg>
                 </div>`;
             card.appendChild(mobileOverlay);
+            mobilePlayBtn = mobileOverlay.querySelector('.mobile-play-btn');
         }
 
         const muteBtn        = card.querySelector(".mute-btn");
@@ -73,12 +75,13 @@ document.addEventListener("DOMContentLoaded", function() {
         let leaveTimer = null;
         let animationFrameId = null;
         let idleTimer;
+        let touchStartY = 0;
+        let touchStartX = 0;
 
         // Helpers
         const hideOverlay = () => { if (mobileOverlay) mobileOverlay.classList.add("hidden"); };
         const showOverlay = () => { if (mobileOverlay) mobileOverlay.classList.remove("hidden"); };
 
-        // Деактивировать карточку (мобиль)
         const deactivateCard = (c) => {
             const v  = c.querySelector("video");
             const p  = c.querySelector(".custom-poster");
@@ -121,17 +124,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             };
 
-            // play event: прячем постер и оверлей
             video.addEventListener("play", () => {
                 if (iconPlay)  iconPlay.style.display  = "none";
                 if (iconPause) iconPause.style.display = "block";
-                if (posterImg) posterImg.classList.add("hidden");  // ← только здесь
+                if (posterImg) posterImg.classList.add("hidden");
                 hideOverlay();
                 wakeUpInterface();
                 animationFrameId = requestAnimationFrame(updateProgressBar);
             });
 
-            // pause event: возвращаем оверлей на мобиле
             video.addEventListener("pause", () => {
                 if (iconPlay)  iconPlay.style.display  = "block";
                 if (iconPause) iconPause.style.display = "none";
@@ -154,6 +155,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     const rect = progressContainer.getBoundingClientRect();
                     video.currentTime = ((e.clientX - rect.left) / rect.width) * video.duration;
                 });
+                if (isTouchDevice) {
+                    progressContainer.addEventListener("touchstart", (e) => {
+                        e.stopPropagation();
+                        const rect = progressContainer.getBoundingClientRect();
+                        video.currentTime = ((e.touches[0].clientX - rect.left) / rect.width) * video.duration;
+                    }, { passive: true });
+                }
             }
 
             if (volSlider) {
@@ -171,15 +179,21 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        // Mute: touchend на мобиле, click на ПК
         if (muteBtn) {
-            muteBtn.addEventListener("click", function(e) {
+            const handleMute = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 globalMuted = !globalMuted;
                 video.muted = globalMuted;
                 if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-                if (volSlider)  volSlider.value       = globalMuted ? 0 : globalVolume;
-            });
+                if (volSlider) volSlider.value = globalMuted ? 0 : globalVolume;
+            };
+            if (isTouchDevice) {
+                muteBtn.addEventListener("touchend", handleMute, { passive: false });
+            } else {
+                muteBtn.addEventListener("click", handleMute);
+            }
         }
 
         if (playPauseBtn) {
@@ -191,18 +205,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (bottomControls) bottomControls.addEventListener("click", (e) => e.stopPropagation());
 
+        // startVideo: просто вызываем play() — браузер сам подгрузит видео
         const tryPlay = () => {
             if (!isShowreel) video.currentTime = 0;
             video.muted = globalMuted;
             if (!globalMuted) video.volume = globalVolume;
             if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-            if (volSlider)  volSlider.value       = globalMuted ? 0 : globalVolume;
+            if (volSlider) volSlider.value = globalMuted ? 0 : globalVolume;
             video.play().catch(err => console.log("Play interrupted:", err));
         };
 
+        // Исправление: не проверяем readyState — video.play() сам запустит загрузку
         const startVideo = () => {
-            if (video.readyState >= 2) tryPlay();
-            else video.addEventListener('canplay', tryPlay, { once: true });
+            tryPlay();
         };
 
         // ── ПК: hover ─────────────────────────────────────────────────
@@ -234,72 +249,94 @@ document.addEventListener("DOMContentLoaded", function() {
             }, 50);
         });
 
-        // ── Мобильный оверлей: тап на кнопку Play ────────────────────
-        if (mobileOverlay) {
-            mobileOverlay.addEventListener("click", function(e) {
-                e.stopPropagation();
+        // ── Мобиль: touchstart — запоминаем позицию (для определения скролла) ──
+        if (isTouchDevice) {
+            card.addEventListener("touchstart", function(e) {
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+            }, { passive: true });
+
+            // Мобиль: touchend на карточке — активация / play-pause
+            card.addEventListener("touchend", function(e) {
+                // Пропускаем если это был скролл (>10px)
+                const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+                const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+                if (dy > 10 || dx > 10) return;
+
+                // Пропускаем кнопки — у них свои обработчики
+                if (e.target.closest('.fs-btn')
+                    || e.target.closest('.mute-btn')
+                    || e.target.closest('.bottom-controls')
+                    || e.target.closest('.mobile-play-btn')) return;
+
+                e.preventDefault(); // Отменяем последующий click (устраняет дублирование)
 
                 if (!card.classList.contains("mobile-active")) {
-                    // Деактивировать все остальные
+                    // Первый тап: активируем
                     document.querySelectorAll(".video-card.mobile-active").forEach(c => {
                         if (c !== card) deactivateCard(c);
                     });
                     card.classList.add("mobile-active");
-                    // НЕ прячем постер здесь — play event сделает это
-                    hideOverlay();
-                    hoveredVideo = video;
-                    startVideo();
-                } else if (video && video.paused) {
-                    video.play().catch(() => {});
-                    hideOverlay();
-                }
-            });
-        }
-
-        // ── Тап по телу карточки (мобиль) ────────────────────────────
-        card.addEventListener("click", function(e) {
-            if (e.target.closest('.fs-btn')
-                || e.target.closest('.mute-btn')
-                || e.target.closest('.bottom-controls')
-                || e.target.closest('.mobile-play-overlay')) return;
-            e.preventDefault();
-
-            if (isTouchDevice) {
-                if (!card.classList.contains("mobile-active")) {
-                    document.querySelectorAll(".video-card.mobile-active").forEach(c => {
-                        if (c !== card) deactivateCard(c);
-                    });
-                    card.classList.add("mobile-active");
-                    // НЕ прячем постер здесь — play event сделает это
                     hideOverlay();
                     hoveredVideo = video;
                     if (video) startVideo();
                 } else {
-                    // Уже активна: play/pause
+                    // Повторный тап: play/pause
                     if (video) {
                         if (video.paused) { video.play().catch(() => {}); hideOverlay(); }
                         else              { video.pause(); showOverlay(); }
                     }
                 }
-                return;
-            }
+            }, { passive: false });
 
-            // ПК: клик = переключить звук
+            // Кнопка Play в оверлее
+            if (mobilePlayBtn) {
+                mobilePlayBtn.addEventListener("touchend", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!card.classList.contains("mobile-active")) {
+                        document.querySelectorAll(".video-card.mobile-active").forEach(c => {
+                            if (c !== card) deactivateCard(c);
+                        });
+                        card.classList.add("mobile-active");
+                        hideOverlay();
+                        hoveredVideo = video;
+                        if (video) startVideo();
+                    } else if (video && video.paused) {
+                        video.play().catch(() => {});
+                        hideOverlay();
+                    }
+                }, { passive: false });
+            }
+        }
+
+        // ── ПК: click = переключить звук ─────────────────────────────
+        card.addEventListener("click", function(e) {
+            if (isTouchDevice) return;
+            if (e.target.closest('.fs-btn') || e.target.closest('.mute-btn') ||
+                e.target.closest('.bottom-controls')) return;
+            e.preventDefault();
             globalMuted = !globalMuted;
             video.muted = globalMuted;
             if (muteLine) muteLine.style.display = globalMuted ? "block" : "none";
-            if (volSlider)  volSlider.value       = globalMuted ? 0 : globalVolume;
+            if (volSlider) volSlider.value = globalMuted ? 0 : globalVolume;
         });
 
         // ── Fullscreen ────────────────────────────────────────────────
         if (fsBtn) {
-            fsBtn.addEventListener("click", function(e) {
+            const handleFS = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 if (video && video.webkitEnterFullscreen) video.webkitEnterFullscreen();
                 else if (card.requestFullscreen)          card.requestFullscreen();
                 else if (card.webkitRequestFullscreen)    card.webkitRequestFullscreen();
-            });
+            };
+            if (isTouchDevice) {
+                fsBtn.addEventListener("touchend", handleFS, { passive: false });
+            } else {
+                fsBtn.addEventListener("click", handleFS);
+            }
         }
     }); // end forEach
 
@@ -328,17 +365,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // ── Клик вне карточки на мобильном ───────────────────────────────
-    document.addEventListener("click", function(e) {
+    document.addEventListener("touchend", function(e) {
         if (isTouchDevice && !e.target.closest('.video-card')) {
-            document.querySelectorAll('.video-card.mobile-active').forEach(c => {
-                const v  = c.querySelector("video");
-                const p  = c.querySelector(".custom-poster");
-                const o  = c.querySelector(".mobile-play-overlay");
-                const sr = c.classList.contains("showreel-card");
-                c.classList.remove("mobile-active");
-                if (v) { v.pause(); if (!sr) { v.currentTime = 0; if (p) p.classList.remove("hidden"); } }
-                if (o) o.classList.remove("hidden");
-            });
+            document.querySelectorAll('.video-card.mobile-active').forEach(c => deactivateCard(c));
         }
     });
 
@@ -347,8 +376,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (e.code === "Space") {
             let activeVideo = null;
             const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-            if (fsEl)          activeVideo = fsEl.querySelector("video");
-            else if (hoveredVideo) activeVideo = hoveredVideo;
+            if (fsEl)               activeVideo = fsEl.querySelector("video");
+            else if (hoveredVideo)  activeVideo = hoveredVideo;
             if (activeVideo) { e.preventDefault(); activeVideo.paused ? activeVideo.play() : activeVideo.pause(); }
         }
     });
@@ -385,26 +414,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 ta.style.cssText = "position:fixed;opacity:0;pointer-events:none;";
                 document.body.appendChild(ta);
                 ta.select();
-                try { document.execCommand('copy'); btn.classList.add("success"); setTimeout(() => btn.classList.remove("success"), 1500); }
-                catch(e) {}
+                try { document.execCommand('copy'); btn.classList.add("success"); setTimeout(() => btn.classList.remove("success"), 1500); } catch(e) {}
                 document.body.removeChild(ta);
             };
             if (navigator.clipboard && window.isSecureContext)
-                navigator.clipboard.writeText(text).then(() => { btn.classList.add("success"); setTimeout(() => btn.classList.remove("success"), 1500); }).catch(fallback);
+                navigator.clipboard.writeText(text)
+                    .then(() => { btn.classList.add("success"); setTimeout(() => btn.classList.remove("success"), 1500); })
+                    .catch(fallback);
             else fallback();
         });
     });
 
     // ── Fade-up ───────────────────────────────────────────────────────
-    new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) { entry.target.classList.add('visible'); }
-        });
-    }, { rootMargin: '-10% 0px', threshold: 0.1 })
-    .observe = (function(orig) {
-        return function(el) { orig.call(this, el); };
-    })(IntersectionObserver.prototype.observe);
-
     const fadeObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) { entry.target.classList.add('visible'); fadeObserver.unobserve(entry.target); }
