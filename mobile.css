@@ -1,28 +1,20 @@
 /*
- * mobile.css — подключить ПОСЛЕ style.css в index.html:
+ * mobile.css — подключить ПОСЛЕ style.css:
  * <link rel="stylesheet" href="mobile.css">
- *
- * Только мобильные правки. ПК версия не тронута.
  */
 
 /* ============================================================
-   МОБИЛЬНАЯ КНОПКА PLAY (оверлей по центру карточки)
+   КНОПКА PLAY (без фона и блюра — как просил)
    ============================================================ */
 
 .mobile-play-overlay {
     position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* z-index НИЖЕ .controls (5) и .bottom-controls (20)
-       чтобы кнопки mute/fs всегда были кликабельны */
-    z-index: 4;
-    background: rgba(0, 0, 0, 0.15);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;          /* ниже .controls (z-index:5) — кнопки всегда доступны */
+    pointer-events: none; /* backdrop не перехватывает тапы */
     transition: opacity 0.2s ease;
-    /* Сам backdrop не перехватывает тапы —
-       только .mobile-play-btn внутри */
-    pointer-events: none;
 }
 
 .mobile-play-overlay.hidden {
@@ -34,33 +26,30 @@
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1.5px solid rgba(255, 255, 255, 0.32);
+    background: rgba(255, 255, 255, 0.22);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    /* Никакого backdrop-filter/blur */
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
-    transition: transform 0.15s ease, background 0.15s ease;
+    pointer-events: auto; /* только кнопка перехватывает тапы */
+    touch-action: manipulation;
     cursor: pointer;
-    /* Только кнопка перехватывает тапы */
-    pointer-events: auto;
+    transition: transform 0.15s ease;
 }
 
 .mobile-play-btn:active {
-    transform: scale(0.9);
-    background: rgba(255, 255, 255, 0.26);
+    transform: scale(0.88);
 }
 
 .mobile-play-btn svg {
     width: 26px;
     height: 26px;
-    /* margin-left убран — он сдвигал треугольник вправо */
+    /* без margin-left — центр треугольника и так близко к центру */
 }
 
-/* На ПК оверлей никогда не отображается */
+/* На ПК оверлей скрыт всегда */
 @media (hover: hover) and (pointer: fine) {
     .mobile-play-overlay { display: none !important; }
 }
@@ -71,13 +60,26 @@
    ============================================================ */
 @media (max-width: 768px) {
 
+    /* touch-action: убирает 300ms задержку кликов на iOS */
+    .video-card,
+    .showreel-card {
+        touch-action: manipulation;
+        cursor: pointer;
+    }
+
+    .ctrl-btn,
+    .mobile-play-btn {
+        touch-action: manipulation;
+    }
+
     /* Верхние кнопки (mute/fs) всегда видны, без transition-мигания */
     .video-card .controls {
         opacity: 1 !important;
-        transition: none !important;   /* ← убирает flash при изменении состояния */
+        transition: none !important;
         background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, transparent 100%);
         padding: 10px 10px 24px;
         pointer-events: auto;
+        z-index: 5;        /* выше overlay (z-index:4) */
     }
 
     /* Нижняя панель скрыта, появляется при mobile-active */
@@ -101,7 +103,7 @@
     .ctrl-btn { width: 44px; height: 44px; }
     .ctrl-btn svg, .play-pause-btn svg { width: 22px; height: 22px; }
 
-    /* dark-glass: оставляем тему-переменную вместо хардкода тёмного цвета
+    /* dark-glass: тема-переменная вместо хардкода
        (исправляет светлую тему на мобиле) */
     .dark-glass {
         backdrop-filter: blur(6px);
@@ -125,28 +127,23 @@
 
 
 /* ============================================================
-   600px — общий layout
+   600px — layout
    ============================================================ */
 @media (max-width: 600px) {
 
-    /* Панель */
     .main-glass-panel { padding: 20px 14px; margin: 8px; border-radius: 24px; }
 
-    /* Hero */
     .main-title { font-size: 2rem; gap: 10px; justify-content: center; white-space: nowrap; }
     .my-work-title { font-size: 1.8rem; }
     .avatar { width: 140px; height: 140px; }
     .avatar-frame { padding: 8px; }
 
-    /* Bio */
     .bio-box { padding: 18px 16px; border-radius: 18px; }
     .bio-box p { font-size: 0.95rem; line-height: 1.6; }
 
-    /* Badges */
     .badges-box { justify-content: center; margin-top: 12px; gap: 8px; }
     .badge { padding: 8px 14px; font-size: 0.82rem; }
 
-    /* Services */
     .services-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .service-card:last-child:nth-child(odd) {
         grid-column: 1 / -1;
@@ -158,14 +155,12 @@
     .service-card p  { font-size: 0.75rem; }
     .service-icon { width: 36px; height: 36px; margin-bottom: 10px; }
 
-    /* Process */
     .process-wrapper { gap: 10px; }
     .process-step { min-width: 100%; padding: 16px 14px; border-radius: 16px; }
 
-    /* Dividers */
     .section-divider { margin: 40px 0 20px; }
 
-    /* Video grid: было max-width:320px — теперь полная ширина */
+    /* Video grid: убран лимит 320px */
     .video-grid {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -177,23 +172,19 @@
     .video-label { font-size: 0.82rem; padding: 7px 16px; bottom: 12px; }
     .bottom-controls { padding: 10px 12px; }
 
-    /* Play overlay кнопка чуть меньше */
+    /* Play btn чуть меньше на маленьких экранах */
     .mobile-play-btn { width: 56px; height: 56px; }
     .mobile-play-btn svg { width: 22px; height: 22px; }
 
-    /* Showreel */
-    .showreel-section { margin: 40px auto; padding: 0 4px; }
     .showreel-card { border-radius: 16px; }
 
-    /* Contacts */
     .contacts-list { flex-direction: column; align-items: stretch; gap: 12px; }
     .contact-item { min-width: unset; max-width: 100%; width: 100%; padding: 14px 16px; border-radius: 18px; }
     .contact-text { font-size: 0.9rem; }
 
-    /* Footer */
     footer { margin-top: 60px; padding-top: 40px; }
 
-    /* Кнопка темы: показываем маленькую (была display:none) */
+    /* Кнопка темы: возвращаем маленькую (была display:none) */
     .theme-toggle-btn {
         display: flex !important;
         width: 38px;
@@ -203,21 +194,21 @@
     }
     .theme-toggle-btn svg { width: 17px; height: 17px; }
 
-    /* Лёгкий zoom для вертикальных видео (скрывает чёрные края) */
-    .video-grid video        { transform: scale(1.03); }
+    /* Zoom для вертикальных видео (скрывает чёрные края) */
+    .video-grid video         { transform: scale(1.03); }
     .video-grid .custom-poster { transform: scale(1.03); }
 
-    /* Шоурил — без zoom */
-    .showreel-card video        { transform: none !important; }
+    /* Шоурил без zoom */
+    .showreel-card video         { transform: none !important; }
     .showreel-card .custom-poster { transform: none; }
 }
 
 
 /* ============================================================
-   ≤380px (iPhone SE и подобные)
+   ≤380px (iPhone SE)
    ============================================================ */
 @media (max-width: 380px) {
-    .main-title  { font-size: 1.75rem; }
+    .main-title    { font-size: 1.75rem; }
     .my-work-title { font-size: 1.55rem; }
     .avatar { width: 120px; height: 120px; }
     .bio-box p { font-size: 0.9rem; }
