@@ -178,6 +178,13 @@
 
     .showreel-card { border-radius: 16px; }
 
+    .showreel-outer {
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 4px;
+    }
+
     .contacts-list { flex-direction: column; align-items: stretch; gap: 12px; }
     .contact-item { min-width: unset; max-width: 100%; width: 100%; padding: 14px 16px; border-radius: 18px; }
     .contact-text { font-size: 0.9rem; }
