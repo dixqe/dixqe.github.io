@@ -134,9 +134,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 animationFrameId = requestAnimationFrame(updateProgressBar);
             });
 
-            // 'playing' срабатывает когда первый кадр реально отрисован
-            video.addEventListener("playing", () => {
-                if (posterImg) posterImg.classList.add("hidden");
+            // Прячем постер только когда currentTime > 0 —
+            // это гарантирует что первый кадр реально отрисован на экране
+            video.addEventListener("timeupdate", () => {
+                if (video.currentTime > 0 && posterImg && !posterImg.classList.contains("hidden")) {
+                    posterImg.classList.add("hidden");
+                }
             });
 
             video.addEventListener("pause", () => {
